@@ -37,8 +37,8 @@ of a traditional table storage.
 
 ### Modeling
 
-The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
-is popular for image segmentation and to compare vision transformer based UNET with CNN based UNET. 
+The framework used to train the model is [MONAI](https://monai.io/), a PyTorch based framework for medical image analysis, that adds a level of abstraction to PyTorch. Instead of defining each layer of our own models, we can instead use entire networks (that are based on scientific paper from the medical research community) and only need to specifiy hyperparameters such as channel sizes, dimensions and loss functions. One such architecure family is [UNet](https://www.nature.com/articles/s41592-018-0261-2). We inten to use a UNET architecture as it 
+is popular for image segmentation. We plan to use a [BasicUNet](https://docs.monai.io/en/stable/networks.html#basicunet) implementation first (based on CNN modules), and later potentially compare the performance to vision transformer based UNET like [UNetr](https://docs.monai.io/en/stable/networks.html#unetr) (this however is intended for 3D image data, so yet to be calrified).
 
 ### Containerization
 
