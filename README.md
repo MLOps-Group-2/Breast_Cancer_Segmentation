@@ -1,9 +1,11 @@
 # Breast Cancer Image Segmentation
 
+## Software Requirements
+
 - python >= 3.10
 - pip >=
 - docker
-- gcp console
+- gcp command line interface
 - conda >=
 - 
 
@@ -16,6 +18,8 @@ on a segmentation of medical images to highlight presence of breast cancer. To a
 [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
 provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
 is popular for image segmentation
+
+![ML canvas](reports/ml-canvas-1.png "ML Canvas")
 
 ### Data
 
