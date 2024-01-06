@@ -1,6 +1,46 @@
 # Breast Cancer Image Segmentation
 
-We perform segmentation of medical images to highlight presence of breast cance.
+- python >= 3.10
+- pip >=
+- docker
+- gcp console
+- conda >=
+- 
+
+## Overview (PROPOSAL)
+
+We perform segmentation of medical images to highlight presence of breast cancer.
+
+This project is a part of a course in machine learning operations in the danish technical university. We will be working
+on a segmentation of medical images to highlight presence of breast cancer. To accomplish this we use the 
+[Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
+provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
+is popular for image segmentation
+
+### Data
+
+Our data used is the [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
+specifically the **224x224** image sizes. 
+
+[APPLY IMAGE EXAMPLE]
+
+[APPLY DATASET DESCRIPTION]
+
+#### Data version control (DVC)
+
+
+
+### Modeling
+
+The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
+is popular for image segmentation and to compare vision transformer based UNET with CNN based UNET.
+
+### Containerization
+
+The training procedure is containerized with docker utilizing the CUDA specific docker container for the option of GPU 
+accellirated training.
+
+### 
 
 # Project proposal
 - Overwiew:
