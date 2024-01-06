@@ -17,7 +17,7 @@ This project is a part of a course in machine learning operations in the danish 
 on a segmentation of medical images to highlight presence of breast cancer. To accomplish this we use the 
 [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
 provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
-is popular for image segmentation
+is popular for image segmentation in the medical domain.
 
 ![ML canvas](reports/ml-canvas-1.png "ML Canvas")
 
@@ -28,7 +28,7 @@ specifically the **224x224** image sizes.
 
 [APPLY IMAGE EXAMPLE]
 
-[APPLY DATASET DESCRIPTION]
+The BCSS dataset, derived from TCGA, includes over 20,000 segmentation annotations of breast cancer tissue regions. Annotations are a collaborative effort of pathologists, residents, and medical students, using the Digital Slide Archive
 
 #### Data version control (DVC)
 
@@ -37,8 +37,7 @@ of a traditional table storage.
 
 ### Modeling
 
-The framework used to train the model is [MONAI](https://monai.io/), a PyTorch based framework for medical image analysis, that adds a level of abstraction to PyTorch. Instead of defining each layer of our own models, we can instead use entire networks (that are based on scientific paper from the medical research community) and only need to specifiy hyperparameters such as channel sizes, dimensions and loss functions. One such architecure family is [UNet](https://www.nature.com/articles/s41592-018-0261-2). We inten to use a UNET architecture as it 
-is popular for image segmentation. We plan to use a [BasicUNet](https://docs.monai.io/en/stable/networks.html#basicunet) implementation first (based on CNN modules), and later potentially compare the performance to vision transformer based UNET like [UNetr](https://docs.monai.io/en/stable/networks.html#unetr) (this however is intended for 3D image data, so yet to be calrified).
+The framework used to train the model is [MONAI](https://monai.io/), a PyTorch based framework for medical image analysis, that adds a level of abstraction to PyTorch. Instead of defining each layer of our own models, we can instead use entire networks (that are based on scientific papers from the medical research community) and only need to specifiy hyperparameters such as channel sizes, dimensions and loss functions. One such architecture family is [UNet](https://www.nature.com/articles/s41592-018-0261-2). We intend to use a UNET architecture as it is popular for image segmentation. We plan to use a [BasicUNet](https://docs.monai.io/en/stable/networks.html#basicunet) implementation first (based on CNN modules), and later potentially compare the performance to vision transformer based UNET like [UNetr](https://docs.monai.io/en/stable/networks.html#unetr) (this however is intended for 3D image data, so yet to be clarified).
 
 ### Containerization
 
@@ -104,10 +103,6 @@ The directory structure of the project looks like this:
 └── LICENSE              <- Open-source license if one is chosen
 ```
 
-Overall goal of the project
-What framework are you going to use and you do you intend to include the framework into your project?
-What data are you going to run on (initially, may change)
-What models do you expect to use
 
 
 
