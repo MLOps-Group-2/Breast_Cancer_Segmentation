@@ -32,68 +32,23 @@ specifically the **224x224** image sizes.
 
 #### Data version control (DVC)
 
-
+For remote data version control we use a GCP blob as a data lake since we work with image data we need a file storage instead 
+of a traditional table storage.
 
 ### Modeling
 
 The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
-is popular for image segmentation and to compare vision transformer based UNET with CNN based UNET.
+is popular for image segmentation and to compare vision transformer based UNET with CNN based UNET. 
 
 ### Containerization
 
 The training procedure is containerized with docker utilizing the CUDA specific docker container for the option of GPU 
-accellirated training.
-
-### 
-
-# Project proposal
-- Overwiew:
-    - implement a semantic segmentation network to segment images from a breast cancer data set
-- Modeling: 
-    - we intend to use a UNET architecture which is popular for medical image segmentation
-    - we plan to compare (vision) transformer based UNET with CNN based UNET
-  
-- Code Organization
-    - cookie clutter template
-
-- Containerization:
-    - in google cloud: run inside a Docker container (possibly a training container and a prediction container --> makes productive use slimer, no trianing dependencies in deployed model container)
-    - 
-
-- Configuration handling
-    - ?
-
-- Data handling:
-    - we DVC for data versioning
-    - we will use blobs/buckets on google cloud
-   	
-
-- Training:
-    - use google cloud (CPU or if GPU then K80/something cheap)
-    - wandb/other tools compatible/available in google cloud
-
-- Deployment:
-    - use something like FastAPI to deploy model/be able to access it
-    
-- Monitoring:
-    - during production
-
---------------------------------------------
-
-
-Next steps:
-- TODO
-
---------------------------------------------
-
-Overall goal of the project
-What framework are you going to use and you do you intend to include the framework into your project?
-What data are you going to run on (initially, may change)
-What models do you expect to use
-
-
+accelerated training.
 
 ## Project structure
+
+The project structure was initially created using the [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for the course machine learning operations
+ course using the template [mlops_template](https://github.com/SkafteNicki/mlops_template).
 
 The directory structure of the project looks like this:
 
@@ -149,6 +104,11 @@ The directory structure of the project looks like this:
 └── LICENSE              <- Open-source license if one is chosen
 ```
 
-Created using [mlops_template](https://github.com/SkafteNicki/mlops_template),
-a [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
-started with Machine Learning Operations (MLOps).
+Overall goal of the project
+What framework are you going to use and you do you intend to include the framework into your project?
+What data are you going to run on (initially, may change)
+What models do you expect to use
+
+
+
+
