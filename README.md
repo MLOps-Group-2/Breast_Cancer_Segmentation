@@ -1,6 +1,53 @@
-# project_name
+# Breast Cancer Image Segmentation
 
-We perform segmentation of medical images to highlight presence of breast cancer
+We perform segmentation of medical images to highlight presence of breast cance.
+
+# Project proposal
+- Overwiew:
+    - implement a semantic segmentation network to segment images from a breast cancer data set
+- Modeling: 
+    - we intend to use a UNET architecture which is popular for medical image segmentation
+    - we plan to compare (vision) transformer based UNET with CNN based UNET
+  
+- Code Organization
+    - cookie clutter template
+
+- Containerization:
+    - in google cloud: run inside a Docker container (possibly a training container and a prediction container --> makes productive use slimer, no trianing dependencies in deployed model container)
+    - 
+
+- Configuration handling
+    - ?
+
+- Data handling:
+    - we DVC for data versioning
+    - we will use blobs/buckets on google cloud
+   	
+
+- Training:
+    - use google cloud (CPU or if GPU then K80/something cheap)
+    - wandb/other tools compatible/available in google cloud
+
+- Deployment:
+    - use something like FastAPI to deploy model/be able to access it
+    
+- Monitoring:
+    - during production
+
+--------------------------------------------
+
+
+Next steps:
+- TODO
+
+--------------------------------------------
+
+Overall goal of the project
+What framework are you going to use and you do you intend to include the framework into your project?
+What data are you going to run on (initially, may change)
+What models do you expect to use
+
+
 
 ## Project structure
 
