@@ -1,15 +1,10 @@
 # Breast Cancer Image Segmentation
 
-## Software Requirements
+1. [Overview](#overview)
+2. [System Requirements](docs/readmes/system_req.md)
+3. [Getting Started](docs/readmes/getting_started.md)
 
-- python >= 3.10
-- pip >=
-- docker
-- gcp command line interface
-- conda >=
-- 
-
-## Overview (PROPOSAL)
+## Overview
 
 We perform segmentation of medical images to highlight presence of breast cancer.
 

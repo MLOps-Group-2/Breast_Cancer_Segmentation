@@ -1,12 +1,14 @@
-.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation
+.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build
 
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = project_name
+PROJECT_NAME = breast_cancer_segmentation
 PYTHON_VERSION = 3.11
 PYTHON_INTERPRETER = python
+DOCKER_TRAINING_REPO = breast_cancer_segmentation_train
+DOCKER_PREDICT_REPO = breast_cancer_segmentation_predict
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -15,6 +17,7 @@ PYTHON_INTERPRETER = python
 ## Set up python interpreter environment
 create_environment:
 	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) --no-default-packages -y
+	source activate $(PROJECT_NAME)
 
 ## Install Python Dependencies
 requirements:
@@ -31,6 +34,17 @@ clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
+## Run main training file
+train:
+	$(PYTHON_INTERPRETER) breast_cancer_segmentation/train_model.py
+
+## Build training container
+training_docker_build:
+	docker build -t $(DOCKER_TRAINING_REPO):latest -f dockerfiles/train_model.dockerfile .
+
+## Build training container
+training_docker_run:
+	docker run -d --rm --name $(PROJECT_NAME)_trainer $(DOCKER_TRAINING_REPO):latest
 
 #################################################################################
 # PROJECT RULES                                                                 #
