@@ -1,4 +1,4 @@
-name: "Run tests"
+name: "Run Tests"
 
 on:
   push:
@@ -24,6 +24,11 @@ jobs:
     - name: Test with pytest
       run: |
         pytest ./tests
+    - name: Coverage
+      run: |
+        pip install coverage
+        coverage run -m pytest tests/
+        coverage report
   
   docker-build-train-test:
     runs-on: ubuntu-latest
