@@ -8,7 +8,7 @@ on:
 
 env:
   GCP_REGION: europe-west3
-  GAR_LOCATION: europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}
+  GAR_LOCATION: europe-west3-docker.pkg.dev/mlops-group-2
 
 jobs:
   unit-testing:
@@ -38,4 +38,4 @@ jobs:
       uses: actions/checkout@v2
     - name: Building Train container
       run: |
-        docker build -t ${{ env.GAR_LOCATION }}/bcs-trainer:$GITHUB_SHA -f dockerfiles/train_model.dockerfile .
+        docker build -t ${{ env.GAR_LOCATION }}/bcs-trainer:${{ github.sha }} -f dockerfiles/train_model.dockerfile .
