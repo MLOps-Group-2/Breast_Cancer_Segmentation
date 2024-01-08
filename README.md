@@ -9,17 +9,17 @@
 We perform segmentation of medical images to highlight presence of breast cancer.
 
 This project is a part of a course in machine learning operations in the danish technical university. We will be working
-on a segmentation of medical images to highlight presence of breast cancer. To accomplish this we use the 
-[Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
-provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which 
+on a segmentation of medical images to highlight presence of breast cancer. To accomplish this we use the
+[Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data)
+provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which
 is popular for image segmentation in the medical domain.
 
 ![ML canvas](reports/ml-canvas-1.png "ML Canvas")
 
 ### Data
 
-Our data used is the [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data) 
-specifically the **224x224** image sizes. 
+Our data used is the [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data)
+specifically the **224x224** image sizes.
 
 [APPLY IMAGE EXAMPLE]
 
@@ -27,7 +27,7 @@ The BCSS dataset, derived from TCGA, includes over 20,000 segmentation annotatio
 
 #### Data version control (DVC)
 
-For remote data version control we use a GCP blob as a data lake since we work with image data we need a file storage instead 
+For remote data version control we use a GCP blob as a data lake since we work with image data we need a file storage instead
 of a traditional table storage.
 
 ### Modeling
@@ -36,7 +36,7 @@ The framework used to train the model is [MONAI](https://monai.io/), a PyTorch b
 
 ### Containerization
 
-The training procedure is containerized with docker utilizing the CUDA specific docker container for the option of GPU 
+The training procedure is containerized with docker utilizing the CUDA specific docker container for the option of GPU
 accelerated training.
 
 ## Project structure
@@ -97,8 +97,3 @@ The directory structure of the project looks like this:
 │
 └── LICENSE              <- Open-source license if one is chosen
 ```
-
-
-
-
-
