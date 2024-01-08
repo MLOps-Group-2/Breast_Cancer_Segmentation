@@ -1,6 +1,6 @@
 # Getting started
 
-Before starting and setting up development environment we recommend having a look at the [system requirements](system_req.md) 
+Before starting and setting up development environment we recommend having a look at the [system requirements](system_req.md)
 beforehand to make sure all requirements are installed.
 
 Create conda environment from makefile
@@ -8,7 +8,7 @@ Create conda environment from makefile
 make create_environment
 ```
 
-You should have the environment already activated and the terminal should have the following 
+You should have the environment already activated and the terminal should have the following
 ```bash
 (breast_cancer_segmentation) $
 ```
