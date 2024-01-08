@@ -7,4 +7,4 @@
 - docker
 - gcp command line interface
 - conda >=
-- 
+-
