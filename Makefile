@@ -17,7 +17,7 @@ DOCKER_PREDICT_REPO = breast_cancer_segmentation_predict
 ## Set up python interpreter environment
 create_environment:
 	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) --no-default-packages -y
-	conda activate $(PROJECT_NAME)
+	source activate $(PROJECT_NAME)
 
 ## Install Python Dependencies
 requirements:
