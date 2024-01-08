@@ -8,7 +8,7 @@ on:
 
 env:
   GCP_REGION: europe-west3
-  GAR_LOCATION: europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/
+  GAR_LOCATION: europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
   unit-testing:
