@@ -1,1 +1,5 @@
+# DVC
+dvc >= 3.38.1
+dvc[gs]
+
 torch >= 2.1.0

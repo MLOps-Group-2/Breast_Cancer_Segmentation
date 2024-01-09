@@ -19,5 +19,9 @@ pytest >= 7.4.3
 # linting
 ruff >= 0.1.3
 
+# DVC
+dvc >= 3.38.1
+dvc[gs]
+
 torch >= 2.1.0
 monai
