@@ -2,9 +2,9 @@ name: "Run Tests"
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [master, main]
   pull_request:
-    branches: [ master, main ]
+    branches: [master, main]
 
 env:
   GCP_REGION: europe-west3
@@ -33,7 +33,7 @@ jobs:
         pip install coverage
         coverage run -m pytest tests/
         coverage report
-
+        
   codecheck:
     runs-on: ubuntu-latest
     steps:
@@ -54,14 +54,13 @@ jobs:
         pip install ruff
         ruff format .
 
-
   docker-build-training:
     runs-on: ubuntu-latest
-    needs: [ unit-testing ]
+    needs: [unit-testing]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Building Train container
-      run: |
-        docker build -t ${{ env.GAR_LOCATION }}/bcs-trainer:${{ github.sha }} -f dockerfiles/train_model.dockerfile .
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Building Train container
+        run: |
+          docker build -t ${{ env.GAR_LOCATION }}/bcs-trainer:${{ github.sha }} -f dockerfiles/train_model.dockerfile .

@@ -2,3 +2,4 @@
     remote = storage
 ['remote "storage"']
     url = gs://bcss-dvc-datasets/
+    version_aware = true
