@@ -23,6 +23,8 @@ class UNETModel(monai.networks.nets.UNet):
             num_res_units=num_res_units
         ).to(self.device)
 
+
+
         self.loss_function = loss_function
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
 

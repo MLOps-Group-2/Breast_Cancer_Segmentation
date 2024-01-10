@@ -27,3 +27,4 @@ torch >= 2.1.0
 monai
 pillow
 tensorboard
+hydra-core

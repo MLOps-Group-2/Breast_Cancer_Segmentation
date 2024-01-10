@@ -23,19 +23,22 @@ from monai.transforms import (
     RandSpatialCrop,
     ScaleIntensity,
 )
+import hydra
 
-
+from omegaconf import OmegaConf
 
 def training_step():
     print("Hello World")
 
-
-def main():
+@hydra.main(version_base=None, config_path="./conf", config_name="config.yaml")
+def main(config):
     """Initial training step"""
     # Ingest images from local file storage
-    tempdir = "../../data/raw/BCSS"
-    images = sorted(glob(os.path.join(tempdir, "train", "*.png")))
-    segs = sorted(glob(os.path.join(tempdir, "train_mask", "*.png")))
+    #print(OmegaConf.to_yaml(config))
+    train_images = sorted(glob(os.path.join(config['resources']['dataset']['train_img_location'], "*.png")))
+    train_segs = sorted(glob(os.path.join(config['resources']['dataset']['train_mask_location'], "*.png")))
+    val_images = sorted(glob(os.path.join(config['resources']['dataset']['validation_img_location'], "*.png")))
+    val_segs = sorted(glob(os.path.join(config['resources']['dataset']['validation_mask_location'], "*.png")))
 
     # define transforms for image and segmentation
     train_imtrans = Compose(
@@ -58,34 +61,20 @@ def main():
     val_segtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
 
     # define array dataset, data loader
-    check_ds = ArrayDataset(images, train_imtrans, segs, train_segtrans)
+    check_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
     check_loader = DataLoader(check_ds, batch_size=10, num_workers=2, pin_memory=torch.cuda.is_available())
     im, seg = monai.utils.misc.first(check_loader)
 
     # create a training data loader
-    train_ds = ArrayDataset(images[:20], train_imtrans, segs[:20], train_segtrans)
-    train_loader = DataLoader(train_ds, batch_size=4, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
+    train_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
+    train_loader = DataLoader(train_ds, batch_size=5, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
     # create a validation data loader
-    val_ds = ArrayDataset(images[-20:], val_imtrans, segs[-20:], val_segtrans)
+    val_ds = ArrayDataset(val_images, val_imtrans, val_segs, val_segtrans)
     val_loader = DataLoader(val_ds, batch_size=1, num_workers=4, pin_memory=torch.cuda.is_available())
     dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
     post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
 
-    # create UNet, DiceLoss and Adam optimizer
     '''
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = monai.networks.nets.UNet(
-        spatial_dims=2,
-        in_channels=3,
-        out_channels=3,
-        channels=(16, 32, 64, 128, 256),
-        strides=(2, 2, 2, 2),
-        num_res_units=2,
-    ).to(device)
-    loss_function = monai.losses.DiceLoss(sigmoid=True)
-    optimizer = torch.optim.Adam(model.parameters(), 1e-3)
-    '''
-
     model = UNETModel(
         monai.losses.DiceLoss(sigmoid=True),
         learning_rate=1e-3,
@@ -96,6 +85,20 @@ def main():
         strides=(2, 2, 2, 2),
         num_res_units=2
     )
+    '''
+
+    # create UNet, DiceLoss and Adam optimizer
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = monai.networks.nets.UNet(
+        spatial_dims=2,
+        in_channels=3,
+        out_channels=1,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        num_res_units=2,
+    ).to(device)
+    loss_function = monai.losses.DiceLoss(sigmoid=True)
+    optimizer = torch.optim.Adam(model.parameters(), 1e-3)
 
     # start a typical PyTorch training
     val_interval = 2
@@ -112,12 +115,12 @@ def main():
         step = 0
         for batch_data in train_loader:
             step += 1
-            inputs, labels = batch_data[0].to(model.device), batch_data[1].to(model.device)
-            model.optimizer.zero_grad()
+            inputs, labels = batch_data[0].to(device), batch_data[1].to(device)
+            optimizer.zero_grad()
             outputs = model(inputs)
-            loss = model.loss_function(outputs, labels)
+            loss = loss_function(outputs, labels)
             loss.backward()
-            model.optimizer.step()
+            optimizer.step()
             epoch_loss += loss.item()
             epoch_len = len(train_ds) // train_loader.batch_size
             print(f"{step}/{epoch_len}, train_loss: {loss.item():.4f}")
@@ -133,9 +136,9 @@ def main():
                 val_labels = None
                 val_outputs = None
                 for val_data in val_loader:
-                    val_images, val_labels = val_data[0].to(model.device), val_data[1].to(model.device)
+                    val_images, val_labels = val_data[0].to(device), val_data[1].to(device)
                     roi_size = (96, 96)
-                    sw_batch_size = 4
+                    sw_batch_size = 5
                     val_outputs = sliding_window_inference(val_images, roi_size, sw_batch_size, model)
                     val_outputs = [post_trans(i) for i in decollate_batch(val_outputs)]
                     # compute metric for current iteration
@@ -162,4 +165,4 @@ def main():
 
 
 if __name__ == "__main__":
-    training_step()
+    main()

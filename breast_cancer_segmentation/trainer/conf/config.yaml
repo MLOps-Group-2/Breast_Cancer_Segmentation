@@ -1,0 +1,11 @@
+resources:
+  dataset:
+    train_img_location: "../../data/raw/miniBCSS/train"
+    train_mask_location: "../../data/raw/miniBCSS/train_mask"
+    validation_img_location: "../../data/raw/miniBCSS/val"
+    validation_mask_location: "../../data/raw/miniBCSS/val_mask"
+    test_location: "data/raw/miniBCSS/test"
+experiments:
+  - test1
+
+
