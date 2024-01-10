@@ -8,6 +8,8 @@ import torch
 from PIL import Image
 from torch.utils.tensorboard import SummaryWriter
 
+from breast_cancer_segmentation.models.UNETModel import UNETModel
+
 import monai
 from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader
 from monai.inferers import sliding_window_inference
@@ -21,9 +23,14 @@ from monai.transforms import (
     RandSpatialCrop,
     ScaleIntensity,
 )
-from monai.visualize import plot_2d_or_3d_image
+
+
 
 def training_step():
+    print("Hello World")
+
+
+def main():
     """Initial training step"""
     # Ingest images from local file storage
     tempdir = "../../data/raw/BCSS"
@@ -65,6 +72,7 @@ def training_step():
     post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
 
     # create UNet, DiceLoss and Adam optimizer
+    '''
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = monai.networks.nets.UNet(
         spatial_dims=2,
@@ -76,6 +84,18 @@ def training_step():
     ).to(device)
     loss_function = monai.losses.DiceLoss(sigmoid=True)
     optimizer = torch.optim.Adam(model.parameters(), 1e-3)
+    '''
+
+    model = UNETModel(
+        monai.losses.DiceLoss(sigmoid=True),
+        learning_rate=1e-3,
+        spatial_dims=2,
+        in_channels=3,
+        out_channels=3,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        num_res_units=2
+    )
 
     # start a typical PyTorch training
     val_interval = 2
@@ -92,12 +112,12 @@ def training_step():
         step = 0
         for batch_data in train_loader:
             step += 1
-            inputs, labels = batch_data[0].to(device), batch_data[1].to(device)
-            optimizer.zero_grad()
+            inputs, labels = batch_data[0].to(model.device), batch_data[1].to(model.device)
+            model.optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, labels)
+            loss = model.loss_function(outputs, labels)
             loss.backward()
-            optimizer.step()
+            model.optimizer.step()
             epoch_loss += loss.item()
             epoch_len = len(train_ds) // train_loader.batch_size
             print(f"{step}/{epoch_len}, train_loss: {loss.item():.4f}")
@@ -113,7 +133,7 @@ def training_step():
                 val_labels = None
                 val_outputs = None
                 for val_data in val_loader:
-                    val_images, val_labels = val_data[0].to(device), val_data[1].to(device)
+                    val_images, val_labels = val_data[0].to(model.device), val_data[1].to(model.device)
                     roi_size = (96, 96)
                     sw_batch_size = 4
                     val_outputs = sliding_window_inference(val_images, roi_size, sw_batch_size, model)
@@ -136,10 +156,6 @@ def training_step():
                     )
                 )
                 writer.add_scalar("val_mean_dice", metric, epoch + 1)
-                # plot the last model output as GIF image in TensorBoard with the corresponding image and label
-                plot_2d_or_3d_image(val_images, epoch + 1, writer, index=0, tag="image")
-                plot_2d_or_3d_image(val_labels, epoch + 1, writer, index=0, tag="label")
-                plot_2d_or_3d_image(val_outputs, epoch + 1, writer, index=0, tag="output")
 
     print(f"train completed, best_metric: {best_metric:.4f} at epoch: {best_metric_epoch}")
     writer.close()
