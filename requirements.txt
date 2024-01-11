@@ -1,9 +1,9 @@
 # DVC
 dvc >= 3.38.1
 dvc[gs]
+hydra-core
+pillow
+pytorch-lightning==2.1.3
+tensorboard
 
 torch >= 2.1.0
-pillow
-tensorboard
-hydra-core
-pytorch-lightning==2.1.3

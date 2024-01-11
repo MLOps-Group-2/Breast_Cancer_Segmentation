@@ -7,5 +7,3 @@ resources:
     test_location: "./data/raw/BCSS/test/"
 experiments:
   - test1
-
-

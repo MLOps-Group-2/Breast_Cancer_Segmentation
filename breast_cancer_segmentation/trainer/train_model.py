@@ -1,22 +1,15 @@
-from gc import callbacks
-import logging
 import os
-import sys
-import tempfile
 from glob import glob
 
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ProgressBar
-#from pytorch_lightning import metrics
-from PIL import Image
-from torch.utils.tensorboard import SummaryWriter
+
+# from pytorch_lightning import metrics
 from breast_cancer_segmentation.models.UNETModel import UNETModel
 
 import monai
-from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader
-from monai.inferers import sliding_window_inference
-from monai.metrics import DiceMetric
+from monai.data import ArrayDataset, DataLoader
 from monai.transforms import (
     Compose,
     LoadImage,
@@ -26,28 +19,28 @@ from monai.transforms import (
 )
 import hydra
 
-from omegaconf import OmegaConf
 
 def training_step():
     print("Hello World")
+
 
 @hydra.main(version_base=None, config_path="./conf", config_name="config.yaml")
 def main(config):
     """Initial training step"""
     # Ingest images from local file storage
-    #print(OmegaConf.to_yaml(config))
+    # print(OmegaConf.to_yaml(config))
 
-    #Data params
+    # Data params
     training_batch_size = 100
     validation_batch_size = 100
-    testing_batch_size = 300
+    testing_batch_size = 300  # noqa
     training_num_workers = 8
     validation_num_workers = 4
 
-    train_images = sorted(glob(os.path.join(config['resources']['dataset']['train_img_location'], "*.png")))
-    train_segs = sorted(glob(os.path.join(config['resources']['dataset']['train_mask_location'], "*.png")))
-    val_images = sorted(glob(os.path.join(config['resources']['dataset']['validation_img_location'], "*.png")))
-    val_segs = sorted(glob(os.path.join(config['resources']['dataset']['validation_mask_location'], "*.png")))
+    train_images = sorted(glob(os.path.join(config["resources"]["dataset"]["train_img_location"], "*.png")))
+    train_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["train_mask_location"], "*.png")))
+    val_images = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_img_location"], "*.png")))
+    val_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_mask_location"], "*.png")))
 
     # define transforms for image and segmentation
     train_imtrans = Compose(
@@ -71,13 +64,23 @@ def main(config):
 
     # create a training data loader
     train_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
-    train_loader = DataLoader(train_ds, batch_size=training_batch_size, shuffle=True, num_workers=training_num_workers, pin_memory=torch.cuda.is_available())
+    train_loader = DataLoader(
+        train_ds,
+        batch_size=training_batch_size,
+        shuffle=True,
+        num_workers=training_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
     # create a validation data loader
     val_ds = ArrayDataset(val_images, val_imtrans, val_segs, val_segtrans)
-    val_loader = DataLoader(val_ds, batch_size=validation_batch_size, num_workers=validation_num_workers, pin_memory=torch.cuda.is_available())
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=validation_batch_size,
+        num_workers=validation_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
 
-
-    #Define model hparams
+    # Define model hparams
     lr = 1e-2
     optimizer = torch.optim.AdamW
 
@@ -92,21 +95,30 @@ def main(config):
     )
 
     model = UNETModel(
-    net=net,
-    criterion=monai.losses.DiceCELoss(to_onehot_y = True, softmax=True),
-    learning_rate=lr,
-    optimizer_class=optimizer,
-)
+        net=net,
+        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        learning_rate=lr,
+        optimizer_class=optimizer,
+    )
 
-    #Define training params
-    val_interval = 2
+    # Define training params
+    val_interval = 2  # noqa
     max_epochs = 1
-    limit_tb = 0.1 #Value from 0 to 1
+    limit_tb = 0.1  # Value from 0 to 1
 
     bar = ProgressBar()
-    trainer = pl.Trainer(accelerator="auto", devices="auto", strategy="auto", limit_train_batches=limit_tb, max_epochs = max_epochs, enable_checkpointing=False, logger=False, callbacks=[bar])
+    trainer = pl.Trainer(
+        accelerator="auto",
+        devices="auto",
+        strategy="auto",
+        limit_train_batches=limit_tb,
+        max_epochs=max_epochs,
+        enable_checkpointing=False,
+        logger=False,
+        callbacks=[bar],
+    )
     trainer.fit(model, train_loader, val_loader)
-    #trainer.test(model, test_loader)
+    # trainer.test(model, test_loader)
 
 
 if __name__ == "__main__":
