@@ -1,4 +1,12 @@
-epochs: 50
-batch_size: 128
-learning_rate:  0.001
-data_path: "path/to/gcp/bucket"
+max_epochs: 25
+limit_train_batches: 1.0
+learning_rate: 0.01
+training_batch_size: 64
+training_num_workers: 8
+validation_batch_size:  64
+validation_num_workers: 4
+train_img_location: "./data/raw/BCSS/train/"
+train_mask_location: "./data/raw/BCSS/train_mask/"
+validation_img_location: "./data/raw/BCSS/val/"
+validation_mask_location: "./data/raw/BCSS/val_mask/"
+test_location: "./data/raw/BCSS/test/"

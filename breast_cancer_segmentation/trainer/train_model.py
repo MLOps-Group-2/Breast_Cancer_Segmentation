@@ -24,23 +24,23 @@ def training_step():
     print("Hello World")
 
 
-@hydra.main(version_base=None, config_path="./conf", config_name="config.yaml")
+@hydra.main(version_base=None, config_path="../../config/hydra", config_name="config_hydra.yaml")
 def main(config):
     """Initial training step"""
     # Ingest images from local file storage
     # print(OmegaConf.to_yaml(config))
 
     # Data params
-    training_batch_size = 100
-    validation_batch_size = 100
+    training_batch_size = config.train_hyp.training_batch_size
+    validation_batch_size = config.train_hyp.validation_batch_size
     testing_batch_size = 300  # noqa
-    training_num_workers = 8
-    validation_num_workers = 4
+    training_num_workers = config.train_hyp.training_num_workers
+    validation_num_workers = config.train_hyp.validation_num_workers
 
-    train_images = sorted(glob(os.path.join(config["resources"]["dataset"]["train_img_location"], "*.png")))
-    train_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["train_mask_location"], "*.png")))
-    val_images = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_img_location"], "*.png")))
-    val_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_mask_location"], "*.png")))
+    train_images = sorted(glob(os.path.join(config.train_hyp.train_img_location, "*.png")))
+    train_segs = sorted(glob(os.path.join(config.train_hyp.train_mask_location, "*.png")))
+    val_images = sorted(glob(os.path.join(config.train_hyp.validation_img_location, "*.png")))
+    val_segs = sorted(glob(os.path.join(config.train_hyp.validation_mask_location, "*.png")))
 
     # define transforms for image and segmentation
     train_imtrans = Compose(
@@ -81,17 +81,17 @@ def main(config):
     )
 
     # Define model hparams
-    lr = 1e-2
+    lr = config.train_hyp.learning_rate
     optimizer = torch.optim.AdamW
 
     # create UNet, DiceLoss and Adam optimizer
     net = monai.networks.nets.UNet(
-        spatial_dims=2,
-        in_channels=3,
-        out_channels=3,
-        channels=(16, 32, 64, 128, 256),
-        strides=(2, 2, 2, 2),
-        num_res_units=2,
+        spatial_dims=config.model_hyp.spatial_dims,
+        in_channels=config.model_hyp.in_channels,
+        out_channels=config.model_hyp.out_channels,
+        channels=config.model_hyp.channels,
+        strides=config.model_hyp.strides,
+        num_res_units=config.model_hyp.num_res_units,
     )
 
     model = UNETModel(
@@ -103,8 +103,8 @@ def main(config):
 
     # Define training params
     val_interval = 2  # noqa
-    max_epochs = 1
-    limit_tb = 0.1  # Value from 0 to 1
+    max_epochs = config.train_hyp.max_epochs
+    limit_tb = config.train_hyp.limit_train_batches # Value from 0 to 1
 
     bar = ProgressBar()
     trainer = pl.Trainer(
