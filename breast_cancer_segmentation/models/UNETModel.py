@@ -4,6 +4,7 @@ from monai.data import decollate_batch
 from monai.metrics import DiceMetric
 from monai.inferers import sliding_window_inference
 from monai.transforms import Activations, AsDiscrete, Compose
+import wandb
 
 
 class UNETModel(pl.LightningModule):
@@ -24,8 +25,9 @@ class UNETModel(pl.LightningModule):
         inputs, labels = batch[0].to(self.device), batch[1].to(self.device)
         outputs = self.net(inputs)
         loss = self.criterion(outputs, labels)
+        self.log("training loss", loss)
         if batch_idx % 5 == 0:
-            print(f"training loss {loss.item()}")
+            print(f"training loss {loss.item()}")  
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -36,6 +38,7 @@ class UNETModel(pl.LightningModule):
         val_outputs = [self.post_trans(i) for i in decollate_batch(val_outputs)]
         # compute metric for current iteration
         self.dice_metric(y_pred=val_outputs, y=val_labels)
+        self.log("validation loss", self.dice_metric.aggregate())
         if batch_idx % 5 == 0:
             print(f"metric loss {self.dice_metric.aggregate().item()}")
         # aggregate the final mean dice result

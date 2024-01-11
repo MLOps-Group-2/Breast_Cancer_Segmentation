@@ -18,6 +18,9 @@ from monai.transforms import (
     ScaleIntensity,
 )
 import hydra
+import wandb
+import logging
+log = logging.getLogger(__name__)
 
 
 def training_step():
@@ -29,6 +32,8 @@ def main(config):
     """Initial training step"""
     # Ingest images from local file storage
     # print(OmegaConf.to_yaml(config))
+
+    #wandb.init(project="dtu_mlops_group2", dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir)
 
     # Data params
     training_batch_size = config.train_hyp.training_batch_size
@@ -114,8 +119,9 @@ def main(config):
         limit_train_batches=limit_tb,
         max_epochs=max_epochs,
         enable_checkpointing=False,
-        logger=False,
         callbacks=[bar],
+        logger=pl.loggers.WandbLogger(project="dtu_mlops_group2", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir),
+        log_every_n_steps=1
     )
     trainer.fit(model, train_loader, val_loader)
     # trainer.test(model, test_loader)
