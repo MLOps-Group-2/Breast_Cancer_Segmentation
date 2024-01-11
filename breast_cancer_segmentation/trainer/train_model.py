@@ -67,10 +67,10 @@ def main(config):
 
     # create a training data loader
     train_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
-    train_loader = DataLoader(train_ds, batch_size=5, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
+    train_loader = DataLoader(train_ds, batch_size=100, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
     # create a validation data loader
     val_ds = ArrayDataset(val_images, val_imtrans, val_segs, val_segtrans)
-    val_loader = DataLoader(val_ds, batch_size=1, num_workers=4, pin_memory=torch.cuda.is_available())
+    val_loader = DataLoader(val_ds, batch_size=100, num_workers=4, pin_memory=torch.cuda.is_available())
     dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
     post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
 
@@ -92,12 +92,12 @@ def main(config):
     model = monai.networks.nets.UNet(
         spatial_dims=2,
         in_channels=3,
-        out_channels=1,
+        out_channels=3,
         channels=(16, 32, 64, 128, 256),
         strides=(2, 2, 2, 2),
         num_res_units=2,
     ).to(device)
-    loss_function = monai.losses.DiceLoss(sigmoid=True)
+    loss_function = monai.losses.DiceLoss(to_onehot_y=True, softmax=True)
     optimizer = torch.optim.Adam(model.parameters(), 1e-3)
 
     # start a typical PyTorch training
@@ -118,6 +118,8 @@ def main(config):
             inputs, labels = batch_data[0].to(device), batch_data[1].to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
+            if step == 1:
+                print(outputs.shape)
             loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
