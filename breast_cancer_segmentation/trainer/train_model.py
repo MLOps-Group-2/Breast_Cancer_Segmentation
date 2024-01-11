@@ -30,6 +30,7 @@ from omegaconf import OmegaConf
 def training_step():
     print("Hello World")
 
+
 @hydra.main(version_base=None, config_path="./conf", config_name="config.yaml")
 def main(config):
     """Initial training step"""
@@ -67,10 +68,10 @@ def main(config):
 
     # create a training data loader
     train_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
-    train_loader = DataLoader(train_ds, batch_size=100, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
+    train_loader = DataLoader(train_ds, batch_size=10, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
     # create a validation data loader
     val_ds = ArrayDataset(val_images, val_imtrans, val_segs, val_segtrans)
-    val_loader = DataLoader(val_ds, batch_size=100, num_workers=4, pin_memory=torch.cuda.is_available())
+    val_loader = DataLoader(val_ds, batch_size=10, num_workers=4, pin_memory=torch.cuda.is_available())
     dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
     post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
 
@@ -87,7 +88,7 @@ def main(config):
     )
     '''
 
-    # create UNet, DiceLoss and Adam optimizer
+    # create UNet, DiceCELoss and Adam optimizer
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = monai.networks.nets.UNet(
         spatial_dims=2,
@@ -97,8 +98,8 @@ def main(config):
         strides=(2, 2, 2, 2),
         num_res_units=2,
     ).to(device)
-    loss_function = monai.losses.DiceLoss(to_onehot_y=True, softmax=True)
-    optimizer = torch.optim.Adam(model.parameters(), 1e-3)
+    loss_function = monai.losses.DiceCELoss(to_onehot_y=True, softmax=True)
+    optimizer = torch.optim.Adam(model.parameters(), 1e-2)
 
     # start a typical PyTorch training
     val_interval = 2
@@ -107,9 +108,10 @@ def main(config):
     epoch_loss_values = list()
     metric_values = list()
     writer = SummaryWriter()
-    for epoch in range(10):
+    num_epochs = 1000
+    for epoch in range(num_epochs):
         print("-" * 10)
-        print(f"epoch {epoch + 1}/{10}")
+        print(f"epoch {epoch + 1}/{num_epochs}")
         model.train()
         epoch_loss = 0
         step = 0
@@ -156,7 +158,7 @@ def main(config):
                     torch.save(model.state_dict(), "best_metric_model_segmentation2d_array.pth")
                     print("saved new best metric model")
                 print(
-                    "current epoch: {} current mean dice: {:.4f} best mean dice: {:.4f} at epoch {}".format(
+                    "current epoch: {} current mean dice (validation): {:.4f} best mean dice: {:.4f} at epoch {}".format(
                         epoch + 1, metric, best_metric, best_metric_epoch
                     )
                 )
