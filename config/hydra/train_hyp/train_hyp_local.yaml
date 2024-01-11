@@ -1,4 +1,8 @@
 epochs: 2
 batch_size: 4
 learning_rate:  0.001
-data_path: "./data/raw/BCSS"
+train_data_path: "./data/raw/BCSS/train"
+train_mask_data_path: "./data/raw/BCSS/train_mask"
+val_data_path: "./data/raw/BCSS/val"
+val_mask_data_path: "./data/raw/BCSS/val_mask"
+test_data_path: "./data/raw/BCSS/test"
