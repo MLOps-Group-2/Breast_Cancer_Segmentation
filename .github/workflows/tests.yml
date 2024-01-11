@@ -54,7 +54,6 @@ jobs:
         pip install ruff
         ruff format .
 
-
   docker-build-training:
     runs-on: ubuntu-latest
     needs: [unit-testing]
