@@ -6,7 +6,7 @@
 
 PROJECT_NAME = breast_cancer_segmentation
 PYTHON_VERSION = 3.11
-PYTHON_INTERPRETER = python
+PYTHON_INTERPRETER = python3.11
 DOCKER_TRAINING_REPO = breast_cancer_segmentation_train
 DOCKER_PREDICT_REPO = breast_cancer_segmentation_predict
 
