@@ -1,0 +1,3 @@
+defaults:
+    - train_hyp: train_hyp_local
+    - model_hyp: model_hyp_01
