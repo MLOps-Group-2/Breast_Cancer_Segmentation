@@ -1,34 +1,46 @@
-import logging
 import os
-import sys
-import tempfile
 from glob import glob
 
 import torch
-from PIL import Image
-from torch.utils.tensorboard import SummaryWriter
+import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ProgressBar
+
+# from pytorch_lightning import metrics
+from breast_cancer_segmentation.models.UNETModel import UNETModel
 
 import monai
-from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader
-from monai.inferers import sliding_window_inference
-from monai.metrics import DiceMetric
+from monai.data import ArrayDataset, DataLoader
 from monai.transforms import (
-    Activations,
-    AsDiscrete,
     Compose,
     LoadImage,
     RandRotate90,
     RandSpatialCrop,
     ScaleIntensity,
 )
-from monai.visualize import plot_2d_or_3d_image
+import hydra
+
 
 def training_step():
+    print("Hello World")
+
+
+@hydra.main(version_base=None, config_path="./conf", config_name="config.yaml")
+def main(config):
     """Initial training step"""
     # Ingest images from local file storage
-    tempdir = "../../data/raw/BCSS"
-    images = sorted(glob(os.path.join(tempdir, "train", "*.png")))
-    segs = sorted(glob(os.path.join(tempdir, "train_mask", "*.png")))
+    # print(OmegaConf.to_yaml(config))
+
+    # Data params
+    training_batch_size = 100
+    validation_batch_size = 100
+    testing_batch_size = 300  # noqa
+    training_num_workers = 8
+    validation_num_workers = 4
+
+    train_images = sorted(glob(os.path.join(config["resources"]["dataset"]["train_img_location"], "*.png")))
+    train_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["train_mask_location"], "*.png")))
+    val_images = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_img_location"], "*.png")))
+    val_segs = sorted(glob(os.path.join(config["resources"]["dataset"]["validation_mask_location"], "*.png")))
 
     # define transforms for image and segmentation
     train_imtrans = Compose(
@@ -50,100 +62,64 @@ def training_step():
     val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
     val_segtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
 
-    # define array dataset, data loader
-    check_ds = ArrayDataset(images, train_imtrans, segs, train_segtrans)
-    check_loader = DataLoader(check_ds, batch_size=10, num_workers=2, pin_memory=torch.cuda.is_available())
-    im, seg = monai.utils.misc.first(check_loader)
-
     # create a training data loader
-    train_ds = ArrayDataset(images[:20], train_imtrans, segs[:20], train_segtrans)
-    train_loader = DataLoader(train_ds, batch_size=4, shuffle=True, num_workers=8, pin_memory=torch.cuda.is_available())
+    train_ds = ArrayDataset(train_images, train_imtrans, train_segs, train_segtrans)
+    train_loader = DataLoader(
+        train_ds,
+        batch_size=training_batch_size,
+        shuffle=True,
+        num_workers=training_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
     # create a validation data loader
-    val_ds = ArrayDataset(images[-20:], val_imtrans, segs[-20:], val_segtrans)
-    val_loader = DataLoader(val_ds, batch_size=1, num_workers=4, pin_memory=torch.cuda.is_available())
-    dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
-    post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
+    val_ds = ArrayDataset(val_images, val_imtrans, val_segs, val_segtrans)
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=validation_batch_size,
+        num_workers=validation_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
+
+    # Define model hparams
+    lr = 1e-2
+    optimizer = torch.optim.AdamW
 
     # create UNet, DiceLoss and Adam optimizer
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = monai.networks.nets.UNet(
+    net = monai.networks.nets.UNet(
         spatial_dims=2,
         in_channels=3,
         out_channels=3,
         channels=(16, 32, 64, 128, 256),
         strides=(2, 2, 2, 2),
         num_res_units=2,
-    ).to(device)
-    loss_function = monai.losses.DiceLoss(sigmoid=True)
-    optimizer = torch.optim.Adam(model.parameters(), 1e-3)
+    )
 
-    # start a typical PyTorch training
-    val_interval = 2
-    best_metric = -1
-    best_metric_epoch = -1
-    epoch_loss_values = list()
-    metric_values = list()
-    writer = SummaryWriter()
-    for epoch in range(10):
-        print("-" * 10)
-        print(f"epoch {epoch + 1}/{10}")
-        model.train()
-        epoch_loss = 0
-        step = 0
-        for batch_data in train_loader:
-            step += 1
-            inputs, labels = batch_data[0].to(device), batch_data[1].to(device)
-            optimizer.zero_grad()
-            outputs = model(inputs)
-            loss = loss_function(outputs, labels)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss.item()
-            epoch_len = len(train_ds) // train_loader.batch_size
-            print(f"{step}/{epoch_len}, train_loss: {loss.item():.4f}")
-            writer.add_scalar("train_loss", loss.item(), epoch_len * epoch + step)
-        epoch_loss /= step
-        epoch_loss_values.append(epoch_loss)
-        print(f"epoch {epoch + 1} average loss: {epoch_loss:.4f}")
+    model = UNETModel(
+        net=net,
+        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        learning_rate=lr,
+        optimizer_class=optimizer,
+    )
 
-        if (epoch + 1) % val_interval == 0:
-            model.eval()
-            with torch.no_grad():
-                val_images = None
-                val_labels = None
-                val_outputs = None
-                for val_data in val_loader:
-                    val_images, val_labels = val_data[0].to(device), val_data[1].to(device)
-                    roi_size = (96, 96)
-                    sw_batch_size = 4
-                    val_outputs = sliding_window_inference(val_images, roi_size, sw_batch_size, model)
-                    val_outputs = [post_trans(i) for i in decollate_batch(val_outputs)]
-                    # compute metric for current iteration
-                    dice_metric(y_pred=val_outputs, y=val_labels)
-                # aggregate the final mean dice result
-                metric = dice_metric.aggregate().item()
-                # reset the status for next validation round
-                dice_metric.reset()
-                metric_values.append(metric)
-                if metric > best_metric:
-                    best_metric = metric
-                    best_metric_epoch = epoch + 1
-                    torch.save(model.state_dict(), "best_metric_model_segmentation2d_array.pth")
-                    print("saved new best metric model")
-                print(
-                    "current epoch: {} current mean dice: {:.4f} best mean dice: {:.4f} at epoch {}".format(
-                        epoch + 1, metric, best_metric, best_metric_epoch
-                    )
-                )
-                writer.add_scalar("val_mean_dice", metric, epoch + 1)
-                # plot the last model output as GIF image in TensorBoard with the corresponding image and label
-                plot_2d_or_3d_image(val_images, epoch + 1, writer, index=0, tag="image")
-                plot_2d_or_3d_image(val_labels, epoch + 1, writer, index=0, tag="label")
-                plot_2d_or_3d_image(val_outputs, epoch + 1, writer, index=0, tag="output")
+    # Define training params
+    val_interval = 2  # noqa
+    max_epochs = 1
+    limit_tb = 0.1  # Value from 0 to 1
 
-    print(f"train completed, best_metric: {best_metric:.4f} at epoch: {best_metric_epoch}")
-    writer.close()
+    bar = ProgressBar()
+    trainer = pl.Trainer(
+        accelerator="auto",
+        devices="auto",
+        strategy="auto",
+        limit_train_batches=limit_tb,
+        max_epochs=max_epochs,
+        enable_checkpointing=False,
+        logger=False,
+        callbacks=[bar],
+    )
+    trainer.fit(model, train_loader, val_loader)
+    # trainer.test(model, test_loader)
 
 
 if __name__ == "__main__":
-    training_step()
+    main()

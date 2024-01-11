@@ -1,0 +1,6 @@
+outs:
+- md5: da8eae710aa8e3411a60f8a5c1575d29.dir
+  size: 14426966
+  nfiles: 250
+  hash: md5
+  path: miniBCSS
