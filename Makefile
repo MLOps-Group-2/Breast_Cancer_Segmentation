@@ -36,7 +36,7 @@ clean:
 
 ## Run main training file
 train:
-	$(PYTHON_INTERPRETER) breast_cancer_segmentation/train_model.py
+	$(PYTHON_INTERPRETER) breast_cancer_segmentation/trainer/train_model.py
 
 ## Build training container
 training_docker_build:
@@ -44,7 +44,7 @@ training_docker_build:
 
 ## Build training container
 training_docker_run:
-	docker run -d --rm --name $(PROJECT_NAME)_trainer $(DOCKER_TRAINING_REPO):latest
+	docker run -d --rm --name $(PROJECT_NAME)_trainer $(DOCKER_TRAINING_REPO):latest -v ./data:data
 
 #################################################################################
 # PROJECT RULES                                                                 #

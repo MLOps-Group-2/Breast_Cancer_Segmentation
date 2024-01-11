@@ -1,2 +1,1 @@
-from breast_cancer_segmentation.models.model import MyNeuralNet
-from breast_cancer_segmentation.predict_model import predict
+
