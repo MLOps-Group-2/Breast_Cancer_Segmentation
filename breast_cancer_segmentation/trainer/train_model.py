@@ -104,7 +104,7 @@ def main(config):
     # Define training params
     val_interval = 2  # noqa
     max_epochs = config.train_hyp.max_epochs
-    limit_tb = config.train_hyp.limit_train_batches # Value from 0 to 1
+    limit_tb = config.train_hyp.limit_train_batches  # Value from 0 to 1
 
     bar = ProgressBar()
     trainer = pl.Trainer(
