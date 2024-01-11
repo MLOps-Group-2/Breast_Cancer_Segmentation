@@ -11,7 +11,7 @@ from pytorch_lightning.callbacks import ProgressBar
 #from pytorch_lightning import metrics
 from PIL import Image
 from torch.utils.tensorboard import SummaryWriter
-from breast_cancer_segmentation.models.UNETModel import Our_UNETModel
+from breast_cancer_segmentation.models.UNETModel import UNETModel
 
 import monai
 from monai.data import ArrayDataset, create_test_image_2d, decollate_batch, DataLoader
@@ -91,7 +91,7 @@ def main(config):
         num_res_units=2,
     )
 
-    model = Our_UNETModel(
+    model = UNETModel(
     net=net,
     criterion=monai.losses.DiceCELoss(to_onehot_y = True, softmax=True),
     learning_rate=lr,
@@ -100,11 +100,11 @@ def main(config):
 
     #Define training params
     val_interval = 2
-    max_epochs = 2
-    limit_tb = 0.25 #Value from 0 to 1
+    max_epochs = 1
+    limit_tb = 0.1 #Value from 0 to 1
 
     bar = ProgressBar()
-    trainer = pl.Trainer(accelerator="auto", devices="auto", strategy="auto", limit_train_batches=limit_tb, max_epochs = max_epochs, log_every_n_steps=val_interval, callbacks=[bar])
+    trainer = pl.Trainer(accelerator="auto", devices="auto", strategy="auto", limit_train_batches=limit_tb, max_epochs = max_epochs, enable_checkpointing=False, logger=False, callbacks=[bar])
     trainer.fit(model, train_loader, val_loader)
     #trainer.test(model, test_loader)
 

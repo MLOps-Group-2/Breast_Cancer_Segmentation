@@ -11,7 +11,7 @@ from monai.transforms import (
     Compose
 )
 
-class Our_UNETModel(pl.LightningModule):
+class UNETModel(pl.LightningModule):
     def __init__(self, net, criterion, learning_rate, optimizer_class):
         super().__init__()
         self.net = net

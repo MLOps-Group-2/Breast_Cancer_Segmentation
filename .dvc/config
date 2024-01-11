@@ -1,5 +1,7 @@
 [core]
     remote = storage
+[cache]
+    type = symlink
 ['remote "storage"']
     url = gs://bcss-dvc-datasets/
     version_aware = true
