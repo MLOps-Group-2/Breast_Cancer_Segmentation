@@ -1,5 +1,9 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/igneous-thunder-410709/bcs-trainer', '-f', 'dockerfiles/train_model.dockerfile', '.']
+    args: ['build', '-t', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer', '-f', 'dockerfiles/train_model.dockerfile', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/igneous-thunder-410709/bcs-trainer']
+    args: ['push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api', '-f', 'dockerfiles/predict_model.dockerfile', '.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io//bcs-prediction-api' ]
