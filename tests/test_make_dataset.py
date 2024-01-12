@@ -10,8 +10,9 @@ from monai.transforms import (
     ScaleIntensity,
 )
 
+
 def create_transforms():
-        # define transforms for image and segmentation
+    # define transforms for image and segmentation
     train_imtrans = Compose(
         [
             LoadImage(image_only=True, ensure_channel_first=True),

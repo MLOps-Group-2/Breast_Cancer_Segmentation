@@ -14,69 +14,66 @@ from monai.transforms import (
 )
 from torchtest import assert_vars_change
 
+
 def create_dataloaders(config):
-        
-        train_img_location = config.train_hyp["train_img_location"]
-        train_mask_location = config.train_hyp["train_mask_location"]
-        validation_img_location = config.train_hyp["validation_img_location"]
-        validation_mask_location = config.train_hyp["validation_mask_location"]
+    train_img_location = config.train_hyp["train_img_location"]
+    train_mask_location = config.train_hyp["train_mask_location"]
+    validation_img_location = config.train_hyp["validation_img_location"]
+    validation_mask_location = config.train_hyp["validation_mask_location"]
 
-        training_batch_size = config.train_hyp["training_batch_size"]
-        training_num_workers = config.train_hyp["training_num_workers"]
-        validation_batch_size = config.train_hyp["validation_batch_size"]
-        validation_num_workers = config.train_hyp["validation_num_workers"]
+    training_batch_size = config.train_hyp["training_batch_size"]
+    training_num_workers = config.train_hyp["training_num_workers"]
+    validation_batch_size = config.train_hyp["validation_batch_size"]
+    validation_num_workers = config.train_hyp["validation_num_workers"]
 
+    train_images = sorted(glob(os.path.join(train_img_location, "*.png")))
+    train_mask_images = sorted(glob(os.path.join(train_mask_location, "*.png")))
+    val_images = sorted(glob(os.path.join(validation_img_location, "*.png")))
+    val_mask_images = sorted(glob(os.path.join(validation_mask_location, "*.png")))
 
-        train_images = sorted(glob(os.path.join(train_img_location, "*.png")))
-        train_mask_images = sorted(glob(os.path.join(train_mask_location, "*.png")))
-        val_images = sorted(glob(os.path.join(validation_img_location, "*.png")))
-        val_mask_images = sorted(glob(os.path.join(validation_mask_location, "*.png")))
+    # define transforms for image and segmentation
+    train_imtrans = Compose(
+        [
+            LoadImage(image_only=True, ensure_channel_first=True),
+            ScaleIntensity(),
+            RandSpatialCrop((96, 96), random_size=False),
+            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+        ]
+    )
+    train_segtrans = Compose(
+        [
+            LoadImage(image_only=True, ensure_channel_first=True),
+            ScaleIntensity(),
+            RandSpatialCrop((96, 96), random_size=False),
+            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+        ]
+    )
+    val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
+    val_segtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
 
-        # define transforms for image and segmentation
-        train_imtrans = Compose(
-            [
-                LoadImage(image_only=True, ensure_channel_first=True),
-                ScaleIntensity(),
-                RandSpatialCrop((96, 96), random_size=False),
-                RandRotate90(prob=0.5, spatial_axes=(0, 1)),
-            ]
-        )
-        train_segtrans = Compose(
-            [
-                LoadImage(image_only=True, ensure_channel_first=True),
-                ScaleIntensity(),
-                RandSpatialCrop((96, 96), random_size=False),
-                RandRotate90(prob=0.5, spatial_axes=(0, 1)),
-            ]
-        )
-        val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
-        val_segtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
+    train_ds = ArrayDataset(train_images, train_imtrans, train_mask_images, train_segtrans)
+    val_ds = ArrayDataset(val_images, val_imtrans, val_mask_images, val_segtrans)
 
-        train_ds = ArrayDataset(train_images, train_imtrans, train_mask_images, train_segtrans)
-        val_ds = ArrayDataset(val_images, val_imtrans, val_mask_images, val_segtrans)
-        
+    train_loader = DataLoader(
+        train_ds,
+        batch_size=training_batch_size,
+        shuffle=True,
+        num_workers=training_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=validation_batch_size,
+        num_workers=validation_num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
 
-        train_loader = DataLoader(
-            train_ds,
-            batch_size=training_batch_size,
-            shuffle=True,
-            num_workers=training_num_workers,
-            pin_memory=torch.cuda.is_available(),
-        )
-        val_loader = DataLoader(
-            val_ds,
-            batch_size=validation_batch_size,
-            num_workers=validation_num_workers,
-            pin_memory=torch.cuda.is_available(),
-        )
+    return train_loader, val_loader
 
-        return train_loader, val_loader
 
 def define_model(config):
     # Define model hparams
-    max_epochs = config.train_hyp['max_epochs']
-    limit_train_batches = config.train_hyp['limit_train_batches']
-    lr = config.train_hyp['learning_rate']
+    lr = config.train_hyp["learning_rate"]
     optimizer = torch.optim.AdamW
 
     # create UNet, DiceLoss and AdamW optimizer
@@ -98,6 +95,7 @@ def define_model(config):
 
     return model
 
+
 def test_model_output():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
@@ -108,11 +106,11 @@ def test_model_output():
         dataiter = iter(train_loader)
         images, labels = next(dataiter)
         outputs = model(images)
-        #Only if softmax is applied in the model
-        #We apply it in the loss, so no need for this assertion
-        #assert torch.all(torch.isclose((torch.sum(outputs[0], dim=0)), torch.ones_like(torch.sum(outputs[0], dim=0)))), "The values for the 3 classes do not sum to one per every pixel"
-        assert outputs.shape == (training_batch_size, 3, 96,96), "Shape of model output is wrong"
-        assert labels.shape == (training_batch_size, 1, 96,96), "Shape of labels is wrong"
+        # Only if softmax is applied in the model
+        # We apply it in the loss, so no need for this assertion
+        # assert torch.all(torch.isclose((torch.sum(outputs[0], dim=0)), torch.ones_like(torch.sum(outputs[0], dim=0)))), "The values for the 3 classes do not sum to one per every pixel"
+        assert outputs.shape == (training_batch_size, 3, 96, 96), "Shape of model output is wrong"
+        assert labels.shape == (training_batch_size, 1, 96, 96), "Shape of labels is wrong"
 
 
 def test_parameters_update():
@@ -120,21 +118,21 @@ def test_parameters_update():
         config = compose(config_name="config_hydra.yaml")
         train_loader, val_loader = create_dataloaders(config)
         model = define_model(config)
-        training_batch_size = config.train_hyp["training_batch_size"]
 
         dataiter = iter(train_loader)
         batch = next(dataiter)
 
         assert_vars_change(
-            device = model.device,
+            device=model.device,
             model=model,
             loss_fn=model.criterion,
             optim=model.optimizer_class(model.parameters(), lr=model.learning_rate),
-            batch=batch
-            )
+            batch=batch,
+        )
+
 
 def check_loss_decrease():
-     with initialize(version_base=None, config_path="../config/hydra/"):
+    with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
         train_loader, val_loader = create_dataloaders(config)
         model = define_model(config)
@@ -150,10 +148,3 @@ def check_loss_decrease():
         second_loss = model.criterion(outputs, labels)
 
         assert second_loss > first_loss, "Loss did not decrease"
-
-        
-
-
-
-
-  

@@ -23,7 +23,7 @@ class UNETModel(pl.LightningModule):
     def forward(self, input):
         output = self.net(input)
         return output
-    
+
     def training_step(self, batch, batch_idx):
         inputs, labels = batch[0].to(self.device), batch[1].to(self.device)
         outputs = self.net(inputs)
