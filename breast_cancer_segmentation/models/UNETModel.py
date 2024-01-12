@@ -4,7 +4,6 @@ from monai.data import decollate_batch
 from monai.metrics import DiceMetric
 from monai.inferers import sliding_window_inference
 from monai.transforms import Activations, AsDiscrete, Compose
-import wandb
 
 
 class UNETModel(pl.LightningModule):
