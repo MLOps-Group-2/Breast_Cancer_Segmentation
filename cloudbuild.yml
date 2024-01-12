@@ -6,7 +6,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api', '-f', 'dockerfiles/predict_model.dockerfile', '.' ]
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io//bcs-prediction-api' ]
+    args: [ 'push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api' ]
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
