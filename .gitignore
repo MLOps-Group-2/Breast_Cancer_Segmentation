@@ -191,4 +191,3 @@ notebooks/**/*.png
 ./outputs/
 ./lightning_logs/
 /wandb
-

@@ -3,7 +3,7 @@ from glob import glob
 
 import torch
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ProgressBar
+from pytorch_lightning.loggers import WandbLogger
 
 # from pytorch_lightning import metrics
 from breast_cancer_segmentation.models.UNETModel import UNETModel
@@ -18,8 +18,8 @@ from monai.transforms import (
     ScaleIntensity,
 )
 import hydra
-import wandb
 import logging
+
 log = logging.getLogger(__name__)
 
 
@@ -32,8 +32,6 @@ def main(config):
     """Initial training step"""
     # Ingest images from local file storage
     # print(OmegaConf.to_yaml(config))
-
-    #wandb.init(project="dtu_mlops_group2", dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir)
 
     # Data params
     training_batch_size = config.train_hyp.training_batch_size
@@ -111,7 +109,13 @@ def main(config):
     max_epochs = config.train_hyp.max_epochs
     limit_tb = config.train_hyp.limit_train_batches  # Value from 0 to 1
 
-    bar = ProgressBar()
+    # bar = ProgressBar()
+    if config.train_hyp.wandb_enabled:
+        wandb_logger = WandbLogger(
+            project="dtu_mlops_group2_test", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
+        )
+    else:
+        wandb_logger = False
     trainer = pl.Trainer(
         accelerator="auto",
         devices="auto",
@@ -119,9 +123,7 @@ def main(config):
         limit_train_batches=limit_tb,
         max_epochs=max_epochs,
         enable_checkpointing=False,
-        callbacks=[bar],
-        logger=pl.loggers.WandbLogger(project="dtu_mlops_group2", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir),
-        log_every_n_steps=1
+        logger=wandb_logger,
     )
     trainer.fit(model, train_loader, val_loader)
     # trainer.test(model, test_loader)

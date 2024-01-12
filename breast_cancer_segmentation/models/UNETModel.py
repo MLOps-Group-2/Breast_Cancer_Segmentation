@@ -25,9 +25,10 @@ class UNETModel(pl.LightningModule):
         inputs, labels = batch[0].to(self.device), batch[1].to(self.device)
         outputs = self.net(inputs)
         loss = self.criterion(outputs, labels)
-        self.log("training loss", loss)
+        self.log_dict({"train_loss": loss.item()}, logger=True, on_step=True)
+        wandb.log({"logits": loss})
         if batch_idx % 5 == 0:
-            print(f"training loss {loss.item()}")  
+            print(f"training loss {loss.item()}")
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -38,7 +39,7 @@ class UNETModel(pl.LightningModule):
         val_outputs = [self.post_trans(i) for i in decollate_batch(val_outputs)]
         # compute metric for current iteration
         self.dice_metric(y_pred=val_outputs, y=val_labels)
-        self.log("validation loss", self.dice_metric.aggregate())
+        self.log("val_loss", self.dice_metric.aggregate().item())
         if batch_idx % 5 == 0:
             print(f"metric loss {self.dice_metric.aggregate().item()}")
         # aggregate the final mean dice result
