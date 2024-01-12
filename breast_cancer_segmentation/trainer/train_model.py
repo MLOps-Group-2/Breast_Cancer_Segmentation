@@ -126,6 +126,10 @@ def main(config):
         logger=wandb_logger,
     )
     trainer.fit(model, train_loader, val_loader)
+
+    path_to_model_registry = config.train_hyp.model_repo_location
+    script = model.to_torchscript()
+    torch.jit.save(script, path_to_model_registry)
     # trainer.test(model, test_loader)
 
 

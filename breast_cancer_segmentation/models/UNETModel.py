@@ -16,6 +16,10 @@ class UNETModel(pl.LightningModule):
         self.dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
         self.post_trans = Compose([Activations(sigmoid=True), AsDiscrete(threshold=0.5)])
 
+    def forward(self, input):
+        output = self.net(input)
+        return output
+
     def configure_optimizers(self):
         optimizer = self.optimizer_class(self.parameters(), lr=self.learning_rate)
         return optimizer
@@ -25,8 +29,6 @@ class UNETModel(pl.LightningModule):
         outputs = self.net(inputs)
         loss = self.criterion(outputs, labels)
         self.log_dict({"train_loss": loss.item()}, logger=True, on_step=True)
-        if batch_idx % 5 == 0:
-            print(f"training loss {loss.item()}")
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -38,8 +40,6 @@ class UNETModel(pl.LightningModule):
         # compute metric for current iteration
         self.dice_metric(y_pred=val_outputs, y=val_labels)
         self.log("val_loss", self.dice_metric.aggregate().item())
-        if batch_idx % 5 == 0:
-            print(f"metric loss {self.dice_metric.aggregate().item()}")
         # aggregate the final mean dice result
         metric = self.dice_metric.aggregate().item()
         # reset the status for next validation round
