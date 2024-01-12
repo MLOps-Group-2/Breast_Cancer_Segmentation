@@ -182,3 +182,10 @@ notebooks/**/runs
 notebooks/**/*.pth
 notebooks/**/*.png
 
+# Trainer reports
+*/trainer/outputs/*
+*/trainer/runs/*
+*/trainer/**/*.pth
+
+./outputs/
+./lightning_logs/

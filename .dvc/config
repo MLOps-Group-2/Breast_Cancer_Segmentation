@@ -1,7 +1,7 @@
 [core]
-    remote = remote_storage
+    remote = storage
 ['remote "storage"']
-    url = gs://bcs-dataset/
+    url = gs://bcss-dvc-datasets/
     version_aware = true
 ['remote "remote_storage"']
     url = gs://bcs-dataset/

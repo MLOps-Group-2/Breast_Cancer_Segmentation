@@ -2,4 +2,4 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/igneous-thunder-410709/bcs-trainer', '-f', 'dockerfiles/train_model.dockerfile', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/igneous-thunder-410709 /bcs-trainer']
+    args: ['push', 'gcr.io/igneous-thunder-410709/bcs-trainer']

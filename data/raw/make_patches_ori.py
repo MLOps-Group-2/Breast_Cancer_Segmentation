@@ -34,8 +34,8 @@ def clip_image_by_order(image_path, label_path, image_clip_dir, label_clip_dir, 
             clip_label_path = os.path.join(label_clip_dir, f"{image_name}_{curr_H}_{curr_W}_size{clip_size}.png")
 
             # Clip the image and label
-            out_img_array = image_array[curr_H:curr_H + clip_size, curr_W:curr_W + clip_size, :]
-            out_label_array = label_array[curr_H:curr_H + clip_size, curr_W:curr_W + clip_size]
+            out_img_array = image_array[curr_H : curr_H + clip_size, curr_W : curr_W + clip_size, :]
+            out_label_array = label_array[curr_H : curr_H + clip_size, curr_W : curr_W + clip_size]
 
             # Save the clipped image and label
             out_img = Image.fromarray(out_img_array)
@@ -44,16 +44,16 @@ def clip_image_by_order(image_path, label_path, image_clip_dir, label_clip_dir, 
             out_label.save(clip_label_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Directories containing the original images and labels
-    image_dir = '0_Public-data-Amgad2019_0.25MPP/rgbs_colorNormalized'
-    label_dir = '0_Public-data-Amgad2019_0.25MPP/masks'
+    image_dir = "0_Public-data-Amgad2019_0.25MPP/rgbs_colorNormalized"
+    label_dir = "0_Public-data-Amgad2019_0.25MPP/masks"
 
     # Directories for storing clipped images and labels for training and validation
-    train_dir = 'BCSS/train'
-    train_mask_dir = 'BCSS/train_mask'
-    val_dir = 'BCSS/val'
-    val_mask_dir = 'BCSS/val_mask'
+    train_dir = "BCSS/train"
+    train_mask_dir = "BCSS/train_mask"
+    val_dir = "BCSS/val"
+    val_mask_dir = "BCSS/val_mask"
 
     # Create directories if they don't exist
     for dir_path in [train_dir, train_mask_dir, val_dir, val_mask_dir]:
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     image_names = os.listdir(image_dir)
 
     # Institutes for validation set
-    val_institutes = ['OL', 'LL', 'E2', 'EW', 'GM', 'S3']
+    val_institutes = ["OL", "LL", "E2", "EW", "GM", "S3"]
 
     # Process each image
     for image_name in tqdm(image_names):
