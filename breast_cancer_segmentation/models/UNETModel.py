@@ -26,7 +26,6 @@ class UNETModel(pl.LightningModule):
         outputs = self.net(inputs)
         loss = self.criterion(outputs, labels)
         self.log_dict({"train_loss": loss.item()}, logger=True, on_step=True)
-        wandb.log({"logits": loss})
         if batch_idx % 5 == 0:
             print(f"training loss {loss.item()}")
         return loss

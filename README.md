@@ -3,7 +3,11 @@
 1. [Overview](#overview)
 2. [System Requirements](docs/readmes/system_req.md)
 3. [Getting Started](docs/readmes/getting_started.md)
-4. [To-Do-List](docs/readmes/to_do_list.md)
+4. [How to Train](docs/readmes/how_to_train.md)
+5. [How to Predict](docs/readmes/how_to_predict.md)
+
+Project progress can be observed here:
+[To-Do-List](docs/readmes/to_do_list.md)
 
 ## Overview
 
