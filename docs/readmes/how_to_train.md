@@ -21,12 +21,7 @@ docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest
 ```
 Afterwards launch the docker container.
 ```bash
-docker run --name <experiment_name> --rm \
--v <path_to_mounted_data>:<path_to_data_in_container> \
--v <path_to_config_files>:<path_to_config_files_in_container> \
-trainer:latest \
-train_hyp=<config_file> \
-model_hyp=<config_file>
+docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>
 ```
 
-## GCP
+## In the Cloud using Vertex AI

@@ -1,0 +1,6 @@
+workerPoolSpecs:
+    machineSpec:
+        machineType: n2-standard-4
+    replicaCount: 1
+    containerSpec:
+        imageUri: gcr.io/igneous-thunder-410709/bcs-trainer
