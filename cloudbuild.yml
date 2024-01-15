@@ -12,9 +12,9 @@ steps:
     entrypoint: gcloud
     args:
       - 'run'
-      - 'deploy'
+      - 'deploy'u
       - 'prediction-api-00001-6xz'
       - '--image'
-      - 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io//bcs-prediction-api:latest'
+      - 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api:latest'
       - '--region'
       - 'europe-west3'
