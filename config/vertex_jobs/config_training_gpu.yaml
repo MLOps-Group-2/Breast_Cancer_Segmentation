@@ -5,5 +5,6 @@ workerPoolSpecs:
         acceleratorCount: 1
     replicaCount: 1
     containerSpec:
-        imageUri: gcr.io/igneous-thunder-410709/bcs-trainer
+        imageUri: europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer:latest
         args: ["train_hyp=train_hyp_gcp_gpu"]
+
