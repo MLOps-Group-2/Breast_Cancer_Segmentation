@@ -21,6 +21,7 @@ from monai.transforms import (
 )
 import hydra
 import logging
+import omegaconf
 
 log = logging.getLogger(__name__)
 
@@ -114,7 +115,9 @@ def main(config):
 
     if config.train_hyp.wandb_enabled:
         wandb_logger = WandbLogger(
-            project="dtu_mlops_group2", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
+            project="dtu_mlops_group2",
+            save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir,
+            config=omegaconf.OmegaConf.to_container(config, resolve=True, throw_on_missing=True),
         )
     else:
         wandb_logger = False
