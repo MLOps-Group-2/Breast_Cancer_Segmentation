@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from hydra import compose, initialize
 import logging
 import torch
+from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 
 
 log = logging.getLogger(__name__)
@@ -21,6 +22,7 @@ def read_health():
 
 @app.post("/predict")
 def read_item(input):
-    # todo: we want to have top classes, not probs
-    # todo: we want to get back original image as well
-    return unet_model(input)
+    # we return the top classes and the original image
+    scores = unet_model(input)  # [1, 3, dim, dim]
+    values, indices = torch.topk(scores, k=1, dim=1)
+    return indices, input
