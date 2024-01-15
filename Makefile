@@ -54,6 +54,9 @@ predict_docker_build:
 predict_docker_run:
 	docker run --rm --name $(PROJECT_NAME)_api -p 8000:80 $(DOCKER_PREDICT_REPO):latest
 
+# predictor
+uvicorn breast_cancer_segmentation.predicter.main:app
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
