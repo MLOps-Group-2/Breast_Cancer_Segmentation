@@ -1,9 +1,11 @@
 import os
+import time
 from glob import glob
 
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
+
 
 # from pytorch_lightning import metrics
 from breast_cancer_segmentation.models.UNETModel import UNETModel
@@ -127,10 +129,11 @@ def main(config):
     )
     trainer.fit(model, train_loader, val_loader)
 
-    path_to_model_registry = config.train_hyp.model_repo_location
-    script = model.to_torchscript()
-    torch.jit.save(script, path_to_model_registry)
-    # trainer.test(model, test_loader)
+    filename = "/model-" + time.strftime("%Y%m%d-%H%M") + ".pt"
+
+    # Save the model in TorchScript format
+    script = torch.jit.script(model)
+    torch.jit.save(script, os.path.join(config.train_hyp.model_repo_location, filename))
 
 
 if __name__ == "__main__":
