@@ -134,7 +134,7 @@ def main(config):
     # Save the model in TorchScript format
     script = model.to_torchscript()
 
-    torch.jit.save(script, os.path.join(config.train_hyp.model_repo_location, filename))
+    torch.jit.save(script, config.train_hyp.model_repo_location + filename)
 
 
 if __name__ == "__main__":
