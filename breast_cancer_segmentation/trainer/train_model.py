@@ -118,6 +118,7 @@ def main(config):
             project="dtu_mlops_group2",
             save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir,
             config=omegaconf.OmegaConf.to_container(config, resolve=True, throw_on_missing=True),
+            anonymous="allow",
         )
     else:
         wandb_logger = False
