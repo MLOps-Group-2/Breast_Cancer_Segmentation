@@ -132,7 +132,8 @@ def main(config):
     filename = "/model-" + time.strftime("%Y%m%d-%H%M") + ".pt"
 
     # Save the model in TorchScript format
-    script = torch.jit.script(model)
+    script = model.to_torchscript()
+
     torch.jit.save(script, os.path.join(config.train_hyp.model_repo_location, filename))
 
 
