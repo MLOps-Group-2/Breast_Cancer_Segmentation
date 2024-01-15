@@ -7,11 +7,10 @@ RUN apt update && \
 
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
-COPY project_name/ project_name/
-COPY data/ data/
+COPY breast_cancer_segmentation/predicter app/predicter
 
 WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
-RUN pip install . --no-deps --no-cache-dir
+# RUN pip install . --no-deps --no-cache-dir
 
-ENTRYPOINT ["python", "-u", "project_name/predict_model.py"]
+CMD ["uvicorn", "app.predicter.main:app", "--host", "0.0.0.0", "--port", "80"]

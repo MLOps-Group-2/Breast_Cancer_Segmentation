@@ -1,13 +1,21 @@
 steps:
-  - name: "gcr.io/cloud-builders/docker"
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer', '-f', 'dockerfiles/train_model.dockerfile', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api', '-f', 'dockerfiles/predict_model.dockerfile', '.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api' ]
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
     args:
-      [
-        "build",
-        "-t",
-        "gcr.io/igneous-thunder-410709/bcs-trainer",
-        "-f",
-        "dockerfiles/train_model.dockerfile",
-        ".",
-      ]
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/igneous-thunder-410709/bcs-trainer"]
+      - 'run'
+      - 'deploy'
+      - 'prediction-api'
+      - '--image'
+      - 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api:latest'
+      - '--region'
+      - 'europe-west3'
+

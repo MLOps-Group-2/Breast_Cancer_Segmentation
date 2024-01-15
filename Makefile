@@ -1,4 +1,4 @@
-.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build
+.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -7,8 +7,8 @@
 PROJECT_NAME = breast_cancer_segmentation
 PYTHON_VERSION = 3.11
 PYTHON_INTERPRETER = python3.11
-DOCKER_TRAINING_REPO = breast_cancer_segmentation_train
-DOCKER_PREDICT_REPO = breast_cancer_segmentation_predict
+DOCKER_TRAINING_REPO = europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer
+DOCKER_PREDICT_REPO = europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -45,6 +45,14 @@ training_docker_build:
 ## Build training container
 training_docker_run:
 	docker run -d --rm --name $(PROJECT_NAME)_trainer $(DOCKER_TRAINING_REPO):latest -v ./data:data
+
+## Build predicter container
+predict_docker_build:
+	docker build -t $(DOCKER_PREDICT_REPO):latest -f dockerfiles/predict_model.dockerfile .
+
+## Run predicter container
+predict_docker_run:
+	docker run --rm --name $(PROJECT_NAME)_api -p 8000:80 $(DOCKER_PREDICT_REPO):latest
 
 #################################################################################
 # PROJECT RULES                                                                 #
