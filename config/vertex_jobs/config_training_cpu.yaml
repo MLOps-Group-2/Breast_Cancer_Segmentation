@@ -4,4 +4,4 @@ workerPoolSpecs:
     replicaCount: 1
     containerSpec:
         imageUri: gcr.io/igneous-thunder-410709/bcs-trainer
-        args: ["train_hyp=train_hyp_gcp_cpu"]
+        args: ["train_hyp=train_hyp_gcp_cpu", "train_hyp.max_epochs=5", "train_hyp.limit_train_batches=0.1"]
