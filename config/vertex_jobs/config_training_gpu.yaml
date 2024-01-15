@@ -5,4 +5,5 @@ workerPoolSpecs:
         acceleratorCount: 1
     replicaCount: 1
     containerSpec:
-        imageUri: gcr.io/mlops-group-2/trainer
+        imageUri: gcr.io/igneous-thunder-410709/bcs-trainer
+        args: ["train_hyp=train_hyp_gcp_gpu"]

@@ -187,5 +187,7 @@ notebooks/**/*.png
 */trainer/runs/*
 */trainer/**/*.pth
 
+/outputs
 ./outputs/
 ./lightning_logs/
+/wandb
