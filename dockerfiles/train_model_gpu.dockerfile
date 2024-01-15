@@ -1,7 +1,5 @@
 # Base image
-# FROM python:3.11-slim
 FROM nvcr.io/nvidia/pytorch:22.03-py3
-# FROM projectmonai/monai:1.3.0
 
 RUN apt update && \
     apt install --no-install-recommends -y build-essential gcc && \

@@ -40,7 +40,7 @@ train:
 
 ## Build training container
 training_docker_build:
-	docker build -t $(DOCKER_TRAINING_REPO):latest -f dockerfiles/train_model.dockerfile .
+	docker build -t $(DOCKER_TRAINING_REPO):gpu -f dockerfiles/train_model.dockerfile .
 
 ## Build training container
 training_docker_run:
