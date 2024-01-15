@@ -38,11 +38,7 @@ def create_transforms():
 def test_train_data():
     with initialize(version_base=None, config_path="./../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        print(f"current dir files are {os.listdir()}")
-        print(os.getcwd())
-        print(config)
         path = config.train_hyp["train_img_location"]
-        print(path)
         train_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(train_images) == 30760, "training data not of the correct len"
         assert isinstance(train_images, list), "Must load a list as train data"
