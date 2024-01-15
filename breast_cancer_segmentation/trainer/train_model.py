@@ -104,6 +104,7 @@ def main(config):
         criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
         learning_rate=lr,
         optimizer_class=optimizer,
+        wandb_logging=config.train_hyp.wandb_enabled,
     )
 
     # Define training params
@@ -111,13 +112,13 @@ def main(config):
     max_epochs = config.train_hyp.max_epochs
     limit_tb = config.train_hyp.limit_train_batches  # Value from 0 to 1
 
-    # bar = ProgressBar()
     if config.train_hyp.wandb_enabled:
         wandb_logger = WandbLogger(
-            project="dtu_mlops_group2_test", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
+            project="dtu_mlops_group2", save_dir=hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
         )
     else:
         wandb_logger = False
+
     trainer = pl.Trainer(
         accelerator="auto",
         devices="auto",
@@ -126,6 +127,7 @@ def main(config):
         max_epochs=max_epochs,
         enable_checkpointing=False,
         logger=wandb_logger,
+        log_every_n_steps=1,
     )
     trainer.fit(model, train_loader, val_loader)
 
@@ -134,7 +136,7 @@ def main(config):
     # Save the model in TorchScript format
     script = model.to_torchscript()
 
-    torch.jit.save(script, os.path.join(config.train_hyp.model_repo_location, filename))
+    torch.jit.save(script, config.train_hyp.model_repo_location.strip() + filename)
 
 
 if __name__ == "__main__":
