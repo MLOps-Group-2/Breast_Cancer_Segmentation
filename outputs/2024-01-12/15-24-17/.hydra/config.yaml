@@ -1,0 +1,31 @@
+train_hyp:
+  max_epochs: 1
+  limit_train_batches: 0.1
+  learning_rate: 0.01
+  training_batch_size: 64
+  training_num_workers: 0
+  validation_batch_size: 64
+  validation_num_workers: 0
+  train_img_location: ./data/raw/BCSS/train/
+  train_mask_location: ./data/raw/BCSS/train_mask/
+  validation_img_location: ./data/raw/BCSS/val/
+  validation_mask_location: ./data/raw/BCSS/val_mask/
+  test_location: ./data/raw/BCSS/test/
+  wandb_enabled: false
+  model_repo_location: ./models/script.pt
+model_hyp:
+  spatial_dims: 2
+  in_channels: 3
+  out_channels: 3
+  channels:
+  - 16
+  - 32
+  - 64
+  - 128
+  - 256
+  strides:
+  - 2
+  - 2
+  - 2
+  - 2
+  num_res_units: 2

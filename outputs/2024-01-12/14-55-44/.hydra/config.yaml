@@ -1,0 +1,10 @@
+resources:
+  dataset:
+    train_img_location: ./data/raw/BCSS/train/
+    train_mask_location: ./data/raw/BCSS/train_mask/
+    validation_img_location: ./data/raw/BCSS/val/
+    validation_mask_location: ./data/raw/BCSS/val_mask/
+    test_location: ./data/raw/BCSS/test/
+experiments:
+- test1
+train_hyp: train_hyp_gcp_cpu

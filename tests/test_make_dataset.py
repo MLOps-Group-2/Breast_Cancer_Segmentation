@@ -42,7 +42,7 @@ def test_train_data():
         print(path)
         train_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(train_images) == 30760, "training data not of the correct len"
-        assert type(train_images) == list, "Must load a list as train data"
+        assert isinstance(train_images, list), "Must load a list as train data"
         assert all(isinstance(x, str) for x in train_images), "all elements in train data list must be strings"
 
 
@@ -52,7 +52,7 @@ def test_train_mask_data():
         path = config.train_hyp["train_mask_location"]
         train_mask_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(train_mask_images) == 30760, "training mask data not of correct len"
-        assert type(train_mask_images) == list, "Must load a list as train mask"
+        assert isinstance(train_mask_images, list), "Must load a list as train mask"
         assert all(isinstance(x, str) for x in train_mask_images), "all elements in train mask list must be strings"
 
 
@@ -62,7 +62,7 @@ def test_val_data():
         path = config.train_hyp["validation_img_location"]
         val_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(val_images) == 5429, "val images not of the correct len"
-        assert type(val_images) == list, "Must load a list as val data"
+        assert isinstance(val_images, list), "Must load a list as val data"
         assert all(isinstance(x, str) for x in val_images), "all elements in val data list must be strings"
 
 
@@ -72,7 +72,7 @@ def test_val_mask_data():
         path = config.train_hyp["validation_mask_location"]
         val_mask_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(val_mask_images) == 5429, "val mask images not of the correct len"
-        assert type(val_mask_images) == list, "Must load a list as val mask"
+        assert isinstance(val_mask_images, list), "Must load a list as val mask"
         assert all(isinstance(x, str) for x in val_mask_images), "all elements in val mask list must be strings"
 
 
@@ -82,7 +82,7 @@ def test_test_data():
         path = config.train_hyp["test_location"]
         test_images = sorted(glob(os.path.join(path, "*.png")))
         assert len(test_images) == 4021, "test images not of the correct len"
-        assert type(test_images) == list, "Must load a list as test data"
+        assert isinstance(test_images, list), "Must load a list as test data"
         assert all(isinstance(x, str) for x in test_images), "all elements in test data list must be strings"
 
 
