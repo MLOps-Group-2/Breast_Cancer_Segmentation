@@ -2,6 +2,8 @@
 # DVC
 dvc >= 3.38.1
 dvc[gs]
+
+fastapi
 hydra-core
 
 # docs
@@ -30,6 +32,4 @@ tensorboard
 
 torch >= 2.1.0
 torchtest==0.5
-
-fastapi
 uvicorn[standard]
