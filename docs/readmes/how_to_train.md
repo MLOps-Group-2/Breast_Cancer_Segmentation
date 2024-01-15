@@ -21,7 +21,15 @@ docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest
 ```
 Afterwards launch the docker container.
 ```bash
-docker run --name first_experiment --rm -v "$(pwd)"/data:/data -v "$(pwd)"/config/hydra:/config/hydra trainer:latest train_hyp=<config_file> model_hyp=<config_file>
+docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>
 ```
 
-## GCP
+## In the Cloud using Vertex AI
+
+Assuming you have built a running training Docker image (throught pipeline), start the training on CPU like this:
+```bash
+gcloud ai custom-jobs create \
+--region=europe-west3 \
+--display-name=<test-run-name> \
+--config=config/vertex_jobs/config_training_cpu.yaml
+```
