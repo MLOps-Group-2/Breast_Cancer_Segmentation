@@ -36,8 +36,10 @@ def create_transforms():
 
 
 def test_train_data():
-    with initialize(version_base=None, config_path="../config/hydra/"):
+    with initialize(version_base=None, config_path="./../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
+        print(os.getcwd())
+        print(config)
         path = config.train_hyp["train_img_location"]
         print(path)
         train_images = sorted(glob(os.path.join(path, "*.png")))

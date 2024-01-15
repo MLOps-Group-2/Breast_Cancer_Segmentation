@@ -4,6 +4,7 @@ from glob import glob
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
+from omegaconf import DictConfig
 
 # from pytorch_lightning import metrics
 from breast_cancer_segmentation.models.UNETModel import UNETModel
@@ -28,7 +29,7 @@ def training_step():
 
 
 @hydra.main(version_base=None, config_path="../../config/hydra", config_name="config_hydra.yaml")
-def main(config):
+def main(config: DictConfig):
     """Initial training step"""
     # Ingest images from local file storage
     # print(OmegaConf.to_yaml(config))
