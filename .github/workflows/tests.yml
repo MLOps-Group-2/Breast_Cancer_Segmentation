@@ -1,14 +1,12 @@
 name: "Run Tests"
 
 on:
-  push:
-    branches: [master, main]
   pull_request:
     branches: [master, main]
 
 env:
   GCP_REGION: europe-west3
-  GAR_LOCATION: gcr.io/igneous-thunder-410709
+  GAR_LOCATION: europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io
 
 jobs:
   unit-testing:
@@ -56,7 +54,7 @@ jobs:
 
   docker-build-training:
     runs-on: ubuntu-latest
-    needs: [unit-testing]
+    needs: [unit-testing, codecheck]
 
     steps:
       - name: Checkout
@@ -64,3 +62,14 @@ jobs:
       - name: Building Train container
         run: |
           docker build -t ${{ env.GAR_LOCATION }}/bcs-trainer:${{ github.sha }} -f dockerfiles/train_model.dockerfile .
+
+  docker-build-api:
+    runs-on: ubuntu-latest
+    needs: [ unit-testing, codecheck ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Building Train container
+        run: |
+          docker build -t ${{ env.GAR_LOCATION }}/bcs-prediction-api:${{ github.sha }} -f dockerfiles/predict_model.dockerfile .
