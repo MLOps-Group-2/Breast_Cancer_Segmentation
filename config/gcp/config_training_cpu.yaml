@@ -1,6 +1,6 @@
 workerPoolSpecs:
     machineSpec:
-        machineType: n1-highmem-2
+        machineType: c3-standard-8
     replicaCount: 1
     containerSpec:
         imageUri: gcr.io/mlops-group-2/trainer
