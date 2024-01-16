@@ -6,6 +6,7 @@ import logging
 import torch
 import torchvision.transforms as transforms
 from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
+from monai.visualize.utils import blend_images
 
 log = logging.getLogger(__name__)
 
@@ -34,21 +35,22 @@ async def predict_img(data: UploadFile = File(...)):
         ]
     )
     # Apply the transform to the image
-    image_tensor = transform(image)
+    image_tensor_no_batch = transform(image)
 
-    image_tensor = image_tensor.unsqueeze(0)
+    image_tensor = image_tensor_no_batch.unsqueeze(0)
     # print(image_tensor.shape)
 
     scores = unet_model(image_tensor)  # [1, 3, dim, dim]
     values, indices = torch.topk(scores, k=1, dim=1)
-    # indices.squeeze(0)
-    indices_2d = indices[0][0][:][:]
-    print(indices_2d.shape)
 
-    # somehow create a tensor with the image data
-    # image_tensor = torch.frombuffer(image, dtype=float)
-    # plt.show(image_tensor)
-    # image.close()
+    # indices.squeeze(0)
+    indices_2d = indices[0][:][:]
+    print(indices_2d.shape)
+    print(image_tensor_no_batch.shape)
+
+    blended_image = blend_images(image_tensor_no_batch, indices_2d, transparent_background=True)  # noqa
+
+    # todo: display/send back blended image
     response = {
         "input": data,
         "message": HTTPStatus.OK.phrase,
