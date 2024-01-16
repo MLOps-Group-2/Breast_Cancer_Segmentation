@@ -343,7 +343,9 @@ We create several images for our project: one for training, one for deployment a
 >
 > Answer:
 
---- question 16 fill here ---
+To debug our code we used the debugger available in VSCode. Sometimes we additionally inserted print() statements when we performed our debugging sessions.
+We do not think that our code is performing perfectly in terms of efficiency. This is why we can perform profiling with pytorch_lightnings simple profiler for the model training. This shows for example that the training_step takes less time than the validation step (see image).
+![profiling](figures/profiling_result.png)
 
 ## Working in the cloud
 

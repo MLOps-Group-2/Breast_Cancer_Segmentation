@@ -147,6 +147,11 @@ def main(config: DictConfig):
     else:
         wandb_logger = False
 
+    if config.train_hyp.profiling:
+        profiler = "simple"
+    else:
+        profiler = None
+
     trainer = pl.Trainer(
         accelerator="auto",
         devices="auto",
@@ -156,7 +161,9 @@ def main(config: DictConfig):
         enable_checkpointing=False,
         logger=wandb_logger,
         log_every_n_steps=1,
+        profiler=profiler,
     )
+
     trainer.fit(model, train_loader, val_loader)
 
     filename = "/model-" + time.strftime("%Y%m%d-%H%M") + ".pt"

@@ -13,3 +13,4 @@ test_location: "./data/raw/BCSS/test/"
 wandb_enabled: False
 model_repo_location: "./models"
 optimizer: "AdamW"
+profiling: False
