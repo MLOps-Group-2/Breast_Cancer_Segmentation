@@ -2,22 +2,23 @@ from fastapi import FastAPI, UploadFile, File, Response
 from PIL import Image
 from io import BytesIO
 
-from hydra import compose, initialize
+
 import logging
 import torch
 import torchvision.transforms as transforms
 from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 from monai.visualize.utils import blend_images
+from .config.Config import Config
 
 log = logging.getLogger(__name__)
 
 app = FastAPI()
-with initialize(version_base=None, config_path="./config"):
-    config = compose(config_name="config.yaml")
-    # path to scripted neural net (with weights)
-    model_path = config.environments.model_path
-    unet_model = torch.jit.load(model_path)
 
+config = Config()
+
+unet_model = torch.jit.load(config.model_path)
+
+print("model path ", config.model_path)
 
 @app.get("/health")
 def read_health():

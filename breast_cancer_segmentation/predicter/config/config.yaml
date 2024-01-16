@@ -1,3 +1,2 @@
-defaults:
-    - environments: local
+model_path: "./models/model-local.pt"
 
