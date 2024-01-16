@@ -21,7 +21,7 @@ on a segmentation of medical images to highlight presence of breast cancer. To a
 provided on kaggle. The framework used to train the model is [MONAI](https://monai.io/) with the intent of a UNET architecture which
 is popular for image segmentation in the medical domain.
 
-![ML canvas](reports/ml-canvas-1.png "ML Canvas")
+![ML canvas](docs/images/ml-canvas-1.png "ML Canvas")
 
 ### Data
 
