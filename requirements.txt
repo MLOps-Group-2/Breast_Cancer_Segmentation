@@ -16,3 +16,5 @@ torch==2.1.2
 tqdm==4.66.1
 uvicorn[standard]
 wandb==0.16.1
+
+
