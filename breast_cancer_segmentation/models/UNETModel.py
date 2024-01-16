@@ -11,7 +11,7 @@ import wandb
 
 
 class UNETModel(pl.LightningModule):
-    def __init__(self, net, criterion, learning_rate, optimizer_class, wandb_logging):
+    def __init__(self, net, criterion, learning_rate, optimizer_class, wandb_logging=False):
         super().__init__()
         self.net = net
         self.criterion = criterion
@@ -28,12 +28,6 @@ class UNETModel(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = self.optimizer_class(self.parameters(), lr=self.learning_rate)
         return optimizer
-
-    """
-    def forward(self, input):
-        output = self.net(input)
-        return output
-    """
 
     def training_step(self, batch, batch_idx):
         inputs, labels = batch[0].to(self.device), batch[1].to(self.device)
