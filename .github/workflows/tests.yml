@@ -30,15 +30,13 @@ jobs:
         with:
           workload_identity_provider: "${{secrets.WIF_PROVIDER}}"
           service_account: "${{secrets.SA_EMAIL}}"
-      - name: Test with pytest
-        run: |
-          pytest ./tests/
-      - name: Coverage
+      - name: Coverage tests
         run: |
           pip install coverage
+          pip install coverage-badge
           coverage run -m pytest tests/
           coverage report
-          coverage-badge -o coverage.svg
+          coverage-badge -o coverage.svg -f
 
   codecheck:
     runs-on: ubuntu-latest
