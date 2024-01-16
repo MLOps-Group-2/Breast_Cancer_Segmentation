@@ -1,6 +1,7 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Response
 from PIL import Image
-from http import HTTPStatus
+from io import BytesIO
+
 from hydra import compose, initialize
 import logging
 import torch
@@ -45,18 +46,28 @@ async def predict_img(data: UploadFile = File(...)):
 
     # indices.squeeze(0)
     indices_2d = indices[0][:][:]
-    print(indices_2d.shape)
-    print(image_tensor_no_batch.shape)
+    print(f"Labels Shape: {indices_2d.shape}")
+    print(f"predicted classes: {set(indices_2d.numpy().flatten())}")
+    print(f"Input Image Shape: {image_tensor_no_batch.shape}")
 
-    blended_image = blend_images(image_tensor_no_batch, indices_2d, transparent_background=True)  # noqa
+    blended_image = blend_images(image_tensor_no_batch, indices_2d, transparent_background=True, cmap="YlGn")  # noqa
+
+    pil_blended = transforms.ToPILImage()(blended_image)
+
+    with BytesIO() as output_bytes:
+        pil_blended.save(output_bytes, format="JPEG")
+        blended_bytes = output_bytes.getvalue()
+
+    return Response(content=blended_bytes, media_type="image/png")
 
     # todo: display/send back blended image
-    response = {
-        "input": data,
-        "message": HTTPStatus.OK.phrase,
-        "status-code": HTTPStatus.OK,
-    }
-    return response
+    # response = {
+    #    "input": data,
+    #    "message": HTTPStatus.OK.phrase,
+    #    "status-code": HTTPStatus.OK,
+    # }
+    #
+    # return response
 
 
 @app.post("/predict")
@@ -65,4 +76,3 @@ def predict(input):
     scores = unet_model(input)  # [1, 3, dim, dim]
     values, indices = torch.topk(scores, k=1, dim=1)
     return indices, input
-    # return input
