@@ -362,7 +362,11 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 >
 > Answer:
 
---- question 17 fill here ---
+In GCP we used the following services:
+- Vertex AI: Used for training the models.
+- Artifact Registry: Used to store our training, inference and monitoring containers.
+- Cloud Storage: Used to store our data and our trained models.
+- Cloud Run: Used to run our server with the prediction api.
 
 ### Question 18
 
@@ -377,7 +381,7 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 >
 > Answer:
 
---- question 18 fill here ---
+Despite the Compute Engine being the backbone of GCP we did not utilize it directly since we decided to launch our model training using Vertex AI. In Vertex AI we used VMs like the XXX to do the training.
 
 ### Question 19
 
@@ -386,7 +390,11 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 >
 > Answer:
 
---- question 19 fill here ---
+Data-Bucket:
+![data_bucket](figures/data_bucket.png)
+
+Model-Bucket:
+[ADD IMAGE]
 
 ### Question 20
 
@@ -395,7 +403,8 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 >
 > Answer:
 
---- question 20 fill here ---
+Artifact Registry:
+![artifact_registry](figures/artifact_registry_trainer.png)
 
 ### Question 21
 
