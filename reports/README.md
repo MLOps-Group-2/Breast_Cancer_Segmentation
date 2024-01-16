@@ -296,7 +296,7 @@ To configure our experiments we took advantage of Hydra. One can run a training 
 >
 > Answer:
 
-We made use of config files. Whenever an experiment runs the corresponding config file will be savved in the outputs folder. Additionally the configuration will also be logged in the Weights & Biases run. To reproduce an experiment one would have to use the hyperparameters visible in the specific run on Weights & Biases and restart a training.
+We made use of config files. Whenever an experiment runs the corresponding config file will be savved in the outputs folder. Additionally the configuration will also be logged in the W&B run. To reproduce an experiment one would have to use the hyperparameters visible in the specific run on W&B and restart a training.
 
 ### Question 14
 
@@ -313,7 +313,7 @@ We made use of config files. Whenever an experiment runs the corresponding confi
 >
 > Answer:
 
---- question 14 fill here ---
+In W&B we log the training loss for every step (see image X) and the validation metric for every epoch (see image X) to monitor the training progress. Both are based on the DICE-metric which is provided by MONAI. Additionally we also visualize the prediction on a specific image of the validation dataset to be able to intuitively say whether a trained model predicts something useful (see image X). On top of that GPU and CPU parameters like the the power usage or memory usage are monitored (see image X) to assess the condition of the training hardware.
 
 ### Question 15
 
@@ -328,7 +328,7 @@ We made use of config files. Whenever an experiment runs the corresponding confi
 >
 > Answer:
 
---- question 15 fill here ---
+We create several images for our project: one for training, one for deployment and one for data monitoring. To run the training on would have to first build the docker image by executing `docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest` and then run the image `docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>`. The training dockerfile is the following: [train_model.dockerfile](../dockerfiles).
 
 ### Question 16
 
