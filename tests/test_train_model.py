@@ -16,15 +16,15 @@ from torchtest import assert_vars_change
 
 
 def create_dataloaders(config):
-    train_img_location = config.train_hyp["train_img_location"]
-    train_mask_location = config.train_hyp["train_mask_location"]
-    validation_img_location = config.train_hyp["validation_img_location"]
-    validation_mask_location = config.train_hyp["validation_mask_location"]
+    train_img_location = config.unittest["train_img_location"]
+    train_mask_location = config.unittest["train_mask_location"]
+    validation_img_location = config.unittest["validation_img_location"]
+    validation_mask_location = config.unittest["validation_mask_location"]
 
-    training_batch_size = config.train_hyp["training_batch_size"]
-    training_num_workers = config.train_hyp["training_num_workers"]
-    validation_batch_size = config.train_hyp["validation_batch_size"]
-    validation_num_workers = config.train_hyp["validation_num_workers"]
+    training_batch_size = config.unittest["training_batch_size"]
+    training_num_workers = config.unittest["training_num_workers"]
+    validation_batch_size = config.unittest["validation_batch_size"]
+    validation_num_workers = config.unittest["validation_num_workers"]
 
     train_images = sorted(glob(os.path.join(train_img_location, "*.png")))
     train_mask_images = sorted(glob(os.path.join(train_mask_location, "*.png")))
@@ -101,7 +101,7 @@ def test_model_output():
         config = compose(config_name="config_hydra.yaml")
         train_loader, val_loader = create_dataloaders(config)
         model = define_model(config)
-        training_batch_size = config.train_hyp["training_batch_size"]
+        training_batch_size = config.unittest["training_batch_size"]
 
         dataiter = iter(train_loader)
         images, labels = next(dataiter)
