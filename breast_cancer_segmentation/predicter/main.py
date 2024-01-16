@@ -10,12 +10,10 @@ from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 log = logging.getLogger(__name__)
 
 app = FastAPI()
-with initialize(version_base=None, config_path="../../config/hydra"):
-    config = compose(config_name="config_hydra.yaml")
+with initialize(version_base=None, config_path="./config"):
+    config = compose(config_name="config.yaml")
     # path to scripted neural net (with weights)
-    # model_path = config.train_hyp.model_repo_location + config.predict_hyp.model_filename
-    # unet_model = None
-    model_path = "./models/model-local.pt"
+    model_path = config.environments.model_path
     unet_model = torch.jit.load(model_path)
 
 
