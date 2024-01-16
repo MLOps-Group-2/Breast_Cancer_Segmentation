@@ -38,9 +38,9 @@ def create_transforms():
 def test_train_data():
     with initialize(version_base=None, config_path="./../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        path = config.train_hyp["train_img_location"]
+        path = config.unittest["train_img_location"]
         train_images = sorted(glob(os.path.join(path, "*.png")))
-        assert len(train_images) == 30760, "training data not of the correct len"
+        assert len(train_images) == config.unittest["traindata_len"], "training data not of the correct len"
         assert isinstance(train_images, list), "Must load a list as train data"
         assert all(isinstance(x, str) for x in train_images), "all elements in train data list must be strings"
 
@@ -48,9 +48,9 @@ def test_train_data():
 def test_train_mask_data():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        path = config.train_hyp["train_mask_location"]
+        path = config.unittest["train_mask_location"]
         train_mask_images = sorted(glob(os.path.join(path, "*.png")))
-        assert len(train_mask_images) == 30760, "training mask data not of correct len"
+        assert len(train_mask_images) == config.unittest["traindata_len"], "training mask data not of correct len"
         assert isinstance(train_mask_images, list), "Must load a list as train mask"
         assert all(isinstance(x, str) for x in train_mask_images), "all elements in train mask list must be strings"
 
@@ -58,9 +58,9 @@ def test_train_mask_data():
 def test_val_data():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        path = config.train_hyp["validation_img_location"]
+        path = config.unittest["validation_img_location"]
         val_images = sorted(glob(os.path.join(path, "*.png")))
-        assert len(val_images) == 5429, "val images not of the correct len"
+        assert len(val_images) == config.unittest["valdata_len"], "val images not of the correct len"
         assert isinstance(val_images, list), "Must load a list as val data"
         assert all(isinstance(x, str) for x in val_images), "all elements in val data list must be strings"
 
@@ -68,9 +68,9 @@ def test_val_data():
 def test_val_mask_data():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        path = config.train_hyp["validation_mask_location"]
+        path = config.unittest["validation_mask_location"]
         val_mask_images = sorted(glob(os.path.join(path, "*.png")))
-        assert len(val_mask_images) == 5429, "val mask images not of the correct len"
+        assert len(val_mask_images) == config.unittest["valdata_len"], "val mask images not of the correct len"
         assert isinstance(val_mask_images, list), "Must load a list as val mask"
         assert all(isinstance(x, str) for x in val_mask_images), "all elements in val mask list must be strings"
 
@@ -78,9 +78,9 @@ def test_val_mask_data():
 def test_test_data():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        path = config.train_hyp["test_location"]
+        path = config.unittest["test_location"]
         test_images = sorted(glob(os.path.join(path, "*.png")))
-        assert len(test_images) == 4021, "test images not of the correct len"
+        assert len(test_images) == config.unittest["testdata_len"], "test images not of the correct len"
         assert isinstance(test_images, list), "Must load a list as test data"
         assert all(isinstance(x, str) for x in test_images), "all elements in test data list must be strings"
 
@@ -88,10 +88,10 @@ def test_test_data():
 def test_train_val_dataset():
     with initialize(version_base=None, config_path="../config/hydra/"):
         config = compose(config_name="config_hydra.yaml")
-        train_path = config.train_hyp["train_img_location"]
-        train_mask_path = config.train_hyp["train_mask_location"]
-        val_path = config.train_hyp["validation_img_location"]
-        val_mask_path = config.train_hyp["validation_mask_location"]
+        train_path = config.unittest["train_img_location"]
+        train_mask_path = config.unittest["train_mask_location"]
+        val_path = config.unittest["validation_img_location"]
+        val_mask_path = config.unittest["validation_mask_location"]
 
         train_images = sorted(glob(os.path.join(train_path, "*.png")))
         train_mask_images = sorted(glob(os.path.join(train_mask_path, "*.png")))

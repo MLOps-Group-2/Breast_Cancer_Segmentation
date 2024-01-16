@@ -1,0 +1,8 @@
+traindata_len: 30760
+valdata_len: 5429
+testdata_len: 4021
+train_img_location: "./data/raw/BCSS/train/"
+train_mask_location: "./data/raw/BCSS/train_mask/"
+validation_img_location: "./data/raw/BCSS/val/"
+validation_mask_location: "./data/raw/BCSS/val_mask/"
+test_location: "./data/raw/BCSS/test/"

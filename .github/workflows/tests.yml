@@ -30,9 +30,6 @@ jobs:
         with:
           workload_identity_provider: "${{secrets.WIF_PROVIDER}}"
           service_account: "${{secrets.SA_EMAIL}}"
-      - name: pull data
-        run: |
-          dvc pull
       - name: Test with pytest
         run: |
           pytest ./tests/
