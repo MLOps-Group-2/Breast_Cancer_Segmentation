@@ -11,7 +11,7 @@ import wandb
 
 
 class UNETModel(pl.LightningModule):
-    def __init__(self, net, criterion, learning_rate, optimizer_class, wandb_logging):
+    def __init__(self, net, criterion, learning_rate, optimizer_class, wandb_logging=False):
         super().__init__()
         self.net = net
         self.criterion = criterion
