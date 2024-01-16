@@ -49,8 +49,8 @@ class UNETModel(pl.LightningModule):
         if batch_idx == 0 and self.wandb_logging:
             img_idx = 1
             values, indices = torch.topk(val_outputs[img_idx], k=1, dim=0)
-            img = blend_images(val_images[img_idx], indices, transparent_background=True)
-            img_true = blend_images(val_images[img_idx], val_labels[img_idx], transparent_background=True)
+            img = blend_images(val_images[img_idx], indices, transparent_background=True, cmap="YlGn")
+            img_true = blend_images(val_images[img_idx], val_labels[img_idx], transparent_background=True, cmap="YlGn")
             fig, (ax1, ax2) = plt.subplots(1, 2)
             ax1.imshow(img.permute(2, 1, 0).cpu())
             ax2.imshow(img_true.permute(2, 1, 0).cpu())
