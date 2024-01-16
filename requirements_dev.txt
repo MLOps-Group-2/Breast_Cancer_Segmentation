@@ -38,3 +38,4 @@ tensorboard
 torch >= 2.1.0
 torchtest==0.5
 uvicorn[standard]
+wandb==0.16.1
