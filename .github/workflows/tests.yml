@@ -38,6 +38,7 @@ jobs:
           pip install coverage
           coverage run -m pytest tests/
           coverage report
+          coverage-badge -o coverage.svg
 
   codecheck:
     runs-on: ubuntu-latest
