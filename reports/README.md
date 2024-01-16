@@ -105,7 +105,7 @@ end of the project.
 >
 > Answer:
 
---- question 1 fill here ---
+MLOps 2
 
 ### Question 2
 > **Enter the study number for each member in the group**
@@ -116,7 +116,7 @@ end of the project.
 >
 > Answer:
 
---- question 2 fill here ---
+s230640, s232001, s232004, s233561
 
 ### Question 3
 > **What framework did you choose to work with and did it help you complete the project?**
