@@ -9,6 +9,7 @@ dvc[gs]
 
 fastapi
 hydra-core
+matplotlib==3.8.2
 
 # docs
 mkdocs <= 1.5.3
@@ -37,3 +38,4 @@ tensorboard
 torch >= 2.1.0
 torchtest==0.5
 uvicorn[standard]
+wandb==0.16.1
