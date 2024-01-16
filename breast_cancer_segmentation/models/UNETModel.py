@@ -45,13 +45,19 @@ class UNETModel(pl.LightningModule):
         # compute metric for current iteration
         self.dice_metric(y_pred=val_outputs, y=val_labels)
         # create logging variables
-        self.log("val_loss", self.dice_metric.aggregate().item())
+        self.log("val_metric", self.dice_metric.aggregate().item())
         if batch_idx == 0 and self.wandb_logging:
-            values, indices = torch.topk(val_outputs[0], k=1, dim=0)
-            img = blend_images(val_images[0], indices, transparent_background=False)
-            fig = plt.figure()
-            ax = fig.add_subplot(1, 1, 1)
-            ax.imshow(img.permute(1, 2, 0).cpu())
+            img_idx = 1
+            values, indices = torch.topk(val_outputs[img_idx], k=1, dim=0)
+            img = blend_images(val_images[img_idx], indices, transparent_background=True)
+            img_true = blend_images(val_images[img_idx], val_labels[img_idx], transparent_background=True)
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+            ax1.imshow(img.permute(2, 1, 0).cpu())
+            ax2.imshow(img_true.permute(2, 1, 0).cpu())
+            ax1.axis("off")
+            ax2.axis("off")
+            ax1.title.set_text("prediction")
+            ax2.title.set_text("ground truth")
             plt.tight_layout()
             self.logger.experiment.log({"prediction_image": wandb.Image(fig)})
         # aggregate the final mean dice result
