@@ -1,4 +1,8 @@
 
+#Coverage
+coverage==7.4.0
+coverage-badge==1.1.0
+
 # DVC
 dvc >= 3.38.1
 dvc[gs]
@@ -31,4 +35,5 @@ ruff >= 0.1.3
 tensorboard
 
 torch >= 2.1.0
+torchtest==0.5
 uvicorn[standard]

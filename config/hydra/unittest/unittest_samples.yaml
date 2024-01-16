@@ -1,0 +1,16 @@
+traindata_len: 5
+valdata_len: 3
+testdata_len: 0
+train_img_location: "./tests/trainer/test-data/train/"
+train_mask_location: "./tests/trainer/test-data/train_mask/"
+validation_img_location: "./tests/trainer/test-data/val/"
+validation_mask_location: "./tests/trainer/test-data/val_mask/"
+test_location: "./tests/trainer/test-data/tst/"
+
+max_epochs: 1
+limit_train_batches: 1
+learning_rate: 0.01
+training_batch_size: 1
+training_num_workers: 0
+validation_batch_size: 1
+validation_num_workers: 0
