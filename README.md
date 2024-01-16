@@ -1,15 +1,14 @@
-# Breast Cancer Image Segmentation
+# Breast Cancer Image Segmentation ![Coverage Report](coverage.svg "ML Canvas")
 
 1. [Overview](#overview)
 2. [System Requirements](docs/readmes/system_req.md)
 3. [Getting Started](docs/readmes/getting_started.md)
 4. [How to Train](docs/readmes/how_to_train.md)
 5. [How to Predict](docs/readmes/how_to_predict.md)
-5. [Guides](docs/readmes/guides/guides.md)
+6. [Guides](docs/readmes/guides/guides.md)
 
 Project progress can be observed here:
 [To-Do-List](docs/readmes/to_do_list.md)
-
 
 ## Overview
 
@@ -49,7 +48,7 @@ accelerated training.
 ## Project structure
 
 The project structure was initially created using the [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for the course machine learning operations
- course using the template [mlops_template](https://github.com/SkafteNicki/mlops_template).
+course using the template [mlops_template](https://github.com/SkafteNicki/mlops_template).
 
 The directory structure of the project looks like this:
 
