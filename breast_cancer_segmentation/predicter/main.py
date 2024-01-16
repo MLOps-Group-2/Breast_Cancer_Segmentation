@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from PIL import Image
 from http import HTTPStatus
 from hydra import compose, initialize
 import logging
@@ -25,27 +26,29 @@ def read_health():
 
 @app.post("/predict-img/")
 async def predict_img(data: UploadFile = File(...)):
-    with open("image.jpg", "wb") as image:
-        # content = await data.read()
-        # image.write(content)
-        pil_image = data.file.read()
-        transform = transforms.Compose(
-            [
-                transforms.Resize((224, 224)),  # Adjust size according to your model's input size
-                transforms.ToTensor(),
-            ]
-        )
-        image_tensor = transform(pil_image)
-        image_tensor = image_tensor.unsqueeze(0)
+    image = Image.open(data.file)
+    transform = transforms.Compose(
+        [
+            # transforms.Resize((96, 96)),  # Resize to your desired input size (optional)
+            transforms.ToTensor(),
+        ]
+    )
+    # Apply the transform to the image
+    image_tensor = transform(image)
 
-        scores = unet_model(input)  # [1, 3, dim, dim]
-        values, indices = torch.topk(scores, k=1, dim=1)
-        print(indices)
+    image_tensor = image_tensor.unsqueeze(0)
+    # print(image_tensor.shape)
 
-        # somehow create a tensor with the image data
-        # image_tensor = torch.frombuffer(image, dtype=float)
-        # plt.show(image_tensor)
-        image.close()
+    scores = unet_model(image_tensor)  # [1, 3, dim, dim]
+    values, indices = torch.topk(scores, k=1, dim=1)
+    # indices.squeeze(0)
+    indices_2d = indices[0][0][:][:]
+    print(indices_2d.shape)
+
+    # somehow create a tensor with the image data
+    # image_tensor = torch.frombuffer(image, dtype=float)
+    # plt.show(image_tensor)
+    # image.close()
     response = {
         "input": data,
         "message": HTTPStatus.OK.phrase,
