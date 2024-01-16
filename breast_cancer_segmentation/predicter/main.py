@@ -6,7 +6,7 @@ from io import BytesIO
 import logging
 import torch
 import torchvision.transforms as transforms
-from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
+#from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 from monai.visualize.utils import blend_images
 from .config.Config import Config
 

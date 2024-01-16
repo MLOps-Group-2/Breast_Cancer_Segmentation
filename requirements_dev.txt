@@ -39,3 +39,4 @@ torch >= 2.1.0
 torchtest==0.5
 torchvision
 uvicorn[standard]
+matplotlib
