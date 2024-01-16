@@ -88,17 +88,40 @@ def main(config):
 
     # Define model hparams
     lr = config.train_hyp.learning_rate
-    optimizer = torch.optim.AdamW
+    if config.train_hyp.optimizer == "AdamW":
+        optimizer = torch.optim.AdamW
+    elif config.train_hyp.optimizer == "Adam":
+        optimizer = torch.optim.Adam
+    else:
+        log.error("No valid optimizer name in configuration file")
 
     # create UNet, DiceLoss and Adam optimizer
-    net = monai.networks.nets.UNet(
-        spatial_dims=config.model_hyp.spatial_dims,
-        in_channels=config.model_hyp.in_channels,
-        out_channels=config.model_hyp.out_channels,
-        channels=config.model_hyp.channels,
-        strides=config.model_hyp.strides,
-        num_res_units=config.model_hyp.num_res_units,
-    )
+    if config.model_hyp.model == "UNet":
+        net = monai.networks.nets.UNet(
+            spatial_dims=config.model_hyp.spatial_dims,
+            in_channels=config.model_hyp.in_channels,
+            out_channels=config.model_hyp.out_channels,
+            channels=config.model_hyp.channels,
+            strides=config.model_hyp.strides,
+            num_res_units=config.model_hyp.num_res_units,
+            dropout=config.model_hyp.dropout,
+            act=config.model_hyp.activation,
+            kernel_size=config.model_hyp.kernel_size,
+            up_kernel_size=config.model_hyp.up_kernel_size,
+        )
+    elif config.model_hyp.model == "AttentionUnet":
+        net = monai.networks.nets.AttentionUnet(
+            spatial_dims=config.model_hyp.spatial_dims,
+            in_channels=config.model_hyp.in_channels,
+            out_channels=config.model_hyp.out_channels,
+            channels=config.model_hyp.channels,
+            strides=config.model_hyp.strides,
+            dropout=config.model_hyp.dropout,
+            kernel_size=config.model_hyp.kernel_size,
+            up_kernel_size=config.model_hyp.up_kernel_size,
+        )
+    else:
+        log.error("No valid model name in configuration file")
 
     model = UNETModel(
         net=net,
