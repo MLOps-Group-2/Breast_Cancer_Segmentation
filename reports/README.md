@@ -257,8 +257,8 @@ We created our project with the intention to utilize DVC. We set up version cont
 Our CI-pipeline consits of four steps:
 1. Unittesting: We run our unittests as well as coverage tests in a first step.
 2. Codecheck: In the codecheck step we do linting and formatting of the code with ruff to comply with style guidelines.
-3. Docker Build Training: We test if our docker build for the model training is succesful.
-4. Docker Build API: We test if our docker build for the prediction API is succesful.
+3. Docker Build Training: We test if our docker build for the model training container is succesful.
+4. Docker Build API: We test if our docker build for the prediction API container is succesful.
 
 All tests are only done for the latest ubuntu realease and Python 3.11. Currently caching is not implemented, but would reduce the pipelines time massively.
 One example run may be found [here](https://github.com/MLOps-Group-2/Breast_Cancer_Segmentation/actions/runs/7541712795).
@@ -281,7 +281,7 @@ One example run may be found [here](https://github.com/MLOps-Group-2/Breast_Canc
 >
 > Answer:
 
-To configure our experiments we took advantage of Hydra. One can run a training with ``python ./breast_cancer_segmentation/trainer/train_model.py train_hyp=<config_file> model_hyp=<config_file>`` where the training and model hyperparameters may be parsed using special config files that include properties such as batch_size or max_epochs.
+To configure our experiments we took advantage of Hydra. One can run a training with ``python ./breast_cancer_segmentation/trainer/train_model.py train_hyp=<config_file> model_hyp=<config_file>`` where the training and model hyperparameters may be parsed using special config files that include properties such as batch_size or max_epochs. The structure consists of a main config file including the link to sub-config files such as for the training, the model, the prediction and the testing. There we can switch between local and cloud configurations by switching between the files.
 
 ### Question 13
 
@@ -296,7 +296,7 @@ To configure our experiments we took advantage of Hydra. One can run a training 
 >
 > Answer:
 
-We made use of config files. Whenever an experiment runs the corresponding config file will be savved in the outputs folder. Additionally the configuration will also be logged in the W&B run. To reproduce an experiment one would have to use the hyperparameters visible in the specific run on W&B and restart a training.
+We made use of config files. Whenever an experiment runs the corresponding config file will be saved in the outputs folder. Additionally the configuration will also be logged in the W&B run. To reproduce an experiment one would have to use the hyperparameters visible in the specific run on W&B and restart a training.
 
 ### Question 14
 
