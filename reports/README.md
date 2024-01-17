@@ -419,7 +419,6 @@ Artifact Registry:
 > Answer:
 
 ![cloud_build](figures/gcp_cloud_build.png)
-Needs to be updated!!!
 
 ### Question 22
 
@@ -435,7 +434,7 @@ Needs to be updated!!!
 >
 > Answer:
 
-We managed to deploy our model by developing an application utilizing FastAPI. In a first step we served the model locally, where one can send an image to the application and receives the segmentation result in return. Afterwards we also deployed it on GCP where a user would have to call the service by callin `put command here`.
+We managed to deploy our model by developing an application utilizing FastAPI. In a first step we served the model locally, where one can send an image to the application and receives the segmentation result in return. Afterwards we also deployed it on GCP where a user would have to call the service by calling `put command here`.
 
 ### Question 23
 
@@ -464,7 +463,7 @@ We managed to implement some monitoring of our deployed model. On one hand we ca
 >
 > Answer:
 
-The billing in GCP felt kind of intransparent as quotas were disabled based on which billing accunt was connected to the project. In total we think we used XX dollars. Most expensive has been the XX service.
+The billing in GCP felt kind of intransparent as quotas were disabled based on which billing accunt was connected to the project. In total we think we used XX dollars. Most expensive has been the cloud storage service. Unfortunately, to commence large scale training we did not have the required quotas resulting in a significantly lower usage of credits.
 
 ## Overall discussion of project
 
@@ -501,7 +500,7 @@ The starting point of our project is the local setup, where we used a cookiecutt
 >
 > Answer:
 
-The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. Additionally our machoine learning problem seemed quite hard to achieve since our models did not train especially well. Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
+The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. Additionally our machoine learning problem seemed quite hard to achieve since our models did not train well. Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
 
 ### Question 27
 
