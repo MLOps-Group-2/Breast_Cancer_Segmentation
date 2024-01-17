@@ -193,7 +193,7 @@ In our pipeline we implemented two checks for code quality and format. Locally w
 >
 > Answer:
 
-In total we have implemented 8 tests which primarly focus on testing the data-loading and training of the model as those are the most important parts of our application. The passing of the tests is required for the code to be merged into production.
+In total we have implemented 10 tests which primarly focus on testing the data-loading, training of the model and the prediction API as those are the most important parts of our application. The passing of the tests is required for the code to be merged into production.
 
 ### Question 8
 
