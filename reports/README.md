@@ -385,7 +385,7 @@ In GCP we used the following services:
 >
 > Answer:
 
-Despite the Compute Engine being the backbone of GCP we did not utilize it directly since we decided to launch our model training using Vertex AI. In Vertex AI we used VMs like the XXX to do the training.
+Initially we decided to not use Compute Engine and instead use Vertex AI. However, we encountered massive quota issues when trying to run our training on Vertex AI. Therfore we also implemented a variant to train on Compute Engine, where we launch a docker container on a VM to train our model. The instances we used are e.g. n2-standard-8.
 
 ### Question 19
 
