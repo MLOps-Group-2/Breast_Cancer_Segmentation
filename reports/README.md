@@ -417,7 +417,8 @@ Artifact Registry:
 >
 > Answer:
 
---- question 21 fill here ---
+![cloud_build](figures/gcp_cloud_build.png)
+Needs to be updated!!!
 
 ### Question 22
 
@@ -433,7 +434,7 @@ Artifact Registry:
 >
 > Answer:
 
---- question 22 fill here ---
+We managed to deploy our model by developing an application utilizing FastAPI. In a first step we served the model locally, where one can send an image to the application and receives the segmentation result in return. Afterwards we also deployed it on GCP where a user would have to call the service by callin `put command here`.
 
 ### Question 23
 
@@ -448,7 +449,7 @@ Artifact Registry:
 >
 > Answer:
 
---- question 23 fill here ---
+We managed to implement some monitoring of our deployed model. On one hand we can monitor our services peroformance via GCPs cloud monitoring functionalities. Are we using SLO and Alerts? Additionally we implemented some data monitoring which shows ...
 
 ### Question 24
 
@@ -462,7 +463,7 @@ Artifact Registry:
 >
 > Answer:
 
---- question 24 fill here ---
+The billing in GCP felt kind of intransparent as quotas were disabled based on which billing accunt was connected to the project. In total we think we used XX dollars. Most expensive has been the XX service.
 
 ## Overall discussion of project
 
@@ -514,4 +515,7 @@ Artifact Registry:
 >
 > Answer:
 
---- question 27 fill here ---
+s230640 was in charge of
+s232001 was in charge of
+s232004 was in charge of
+s233561 was in charge of
