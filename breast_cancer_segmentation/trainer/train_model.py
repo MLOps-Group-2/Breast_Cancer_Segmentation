@@ -17,8 +17,6 @@ from monai.data import ArrayDataset, DataLoader
 from monai.transforms import (
     Compose,
     LoadImage,
-    RandRotate90,
-    RandSpatialCrop,
     ScaleIntensity,
 )
 import hydra
@@ -55,16 +53,16 @@ def main(config: DictConfig):
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     train_segtrans = Compose(
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
