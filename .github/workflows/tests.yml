@@ -34,6 +34,7 @@ jobs:
         run: |
           pip install coverage
           pip install coverage-badge
+          make serve_api
           coverage run -m pytest tests/
           coverage report
           coverage-badge -o coverage.svg -f
