@@ -313,7 +313,10 @@ We made use of config files. Whenever an experiment runs the corresponding confi
 >
 > Answer:
 
-In W&B we log the training loss for every step (see image X) and the validation metric for every epoch (see image X) to monitor the training progress. Both are based on the DICE-metric which is provided by MONAI. Additionally we also visualize the prediction on a specific image of the validation dataset to be able to intuitively say whether a trained model predicts something useful (see image X). On top of that GPU and CPU parameters like the the power usage or memory usage are monitored (see image X) to assess the condition of the training hardware.
+In W&B we log the training loss for every step (see image 1) and the validation metric for every epoch (see image 1) to monitor the training progress. Both are based on the DICE-metric which is provided by MONAI. Additionally we also visualize the prediction on a specific image of the validation dataset to be able to intuitively say whether a trained model predicts something useful (see image 1). On top of that GPU and CPU parameters like the the power usage or memory usage are monitored (see image 2) to assess the condition of the training hardware.
+
+![W&B metrics](./figures/wandb_training_metrics.png)
+![W&B GPU metrics](./figures/wandb_gpu_metrics.png)
 
 ### Question 15
 
