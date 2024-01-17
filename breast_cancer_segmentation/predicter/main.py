@@ -9,6 +9,7 @@ import torchvision.transforms as transforms
 #from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 from monai.visualize.utils import blend_images
 from .config.Config import Config
+from breast_cancer_segmentation.utils.gcp import download_blob
 
 log = logging.getLogger(__name__)
 
@@ -16,9 +17,10 @@ app = FastAPI()
 
 config = Config()
 
+# Load model
+if config.storage_mode == "gcp":
+    download_blob(config.model_repository, config.model_path, './models/model.pt')
 unet_model = torch.jit.load(config.model_path)
-
-print("model path ", config.model_path)
 
 @app.get("/health")
 def read_health():
