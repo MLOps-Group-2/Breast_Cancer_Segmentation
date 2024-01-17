@@ -40,7 +40,7 @@
 * [ ] Setup monitoring for the performance of your deployed model
 * [x] If applicable, play around with distributed data loading
 * [ ] ~~If applicable, play around with distributed model training~~
-* [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed
+* [ ] ~~Play around with quantization, compilation and pruning for you trained models to increase inference speed~~
 
 ### Additional
 
