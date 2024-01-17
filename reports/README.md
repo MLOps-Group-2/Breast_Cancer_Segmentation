@@ -369,6 +369,7 @@ In GCP we used the following services:
 - Vertex AI: Used for training the models.
 - Artifact Registry: Used to store our training, inference and monitoring containers.
 - Cloud Storage: Used to store our data and our trained models.
+- Cloud Build: Used to build the docker containers for training, prediction & monitoring.
 - Cloud Run: Used to run our server with the prediction api.
 
 ### Question 18
