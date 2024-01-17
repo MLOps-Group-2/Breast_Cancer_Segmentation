@@ -1,0 +1,16 @@
+- name: "gcr.io/cloud-builders/docker"
+  args:
+    [
+      "build",
+      "-t",
+      "europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer",
+      "-f",
+      "dockerfiles/data_drifting.dockerfile",
+      ".",
+    ]
+- name: "gcr.io/cloud-builders/docker"
+  args:
+    [
+      "push",
+      "europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-data-drift",
+    ]
