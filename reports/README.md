@@ -331,7 +331,7 @@ In W&B we log the training loss for every step (see image 1) and the validation 
 >
 > Answer:
 
-We create several images for our project: one for training, one for deployment and one for data monitoring. To run the training on would have to first build the docker image by executing `docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest` and then run the image `docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>`. The training dockerfile is the following: [train_model.dockerfile](../dockerfiles).
+We create several images for our project: one for training, one for deployment and one for data monitoring. To run the training on would have to first build the docker image by executing `docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest` and then run the image `docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>`. The training dockerfile is the following: [train_model.dockerfile](https://github.com/MLOps-Group-2/Breast_Cancer_Segmentation/blob/main/dockerfiles/train_model.dockerfile).
 
 ### Question 16
 
@@ -366,7 +366,8 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 > Answer:
 
 In GCP we used the following services:
-- Vertex AI: Used for training the models.
+- Vertex AI: Used for training the models using custom jobs.
+- Compute Engine: Used for training the models.
 - Artifact Registry: Used to store our training, inference and monitoring containers.
 - Cloud Storage: Used to store our data and our trained models.
 - Cloud Build: Used to build the docker containers for training, prediction & monitoring.
@@ -385,7 +386,7 @@ In GCP we used the following services:
 >
 > Answer:
 
-Initially we decided to not use Compute Engine and instead use Vertex AI. However, we encountered massive quota issues when trying to run our training on Vertex AI. Therfore we also implemented a variant to train on Compute Engine, where we launch a docker container on a VM to train our model. The instances we used are e.g. n2-standard-8.
+Initially we decided to not use Compute Engine and instead use Vertex AI. However, we encountered massive quota issues when trying to run our training on Vertex AI. Therfore we also implemented a variant to train on Compute Engine, where we launch a docker container on a VM to train our model. The instances we used are e.g. n2-standard-8 as no quota for GPU-VMs was available.
 
 ### Question 19
 
@@ -398,7 +399,7 @@ Data-Bucket:
 ![data_bucket](figures/data_bucket.png)
 
 Model-Bucket:
-[ADD IMAGE]
+![model_bucket](figures/model_bucket.png)
 
 ### Question 20
 
