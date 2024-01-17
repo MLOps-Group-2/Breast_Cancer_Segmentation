@@ -66,6 +66,7 @@ class UNETModel(pl.LightningModule):
             ax2.title.set_text("ground truth")
             plt.tight_layout()
             self.logger.experiment.log({"prediction_image": wandb.Image(fig)})
+            plt.close()
         # aggregate the final mean dice result
         metric = self.dice_metric.aggregate().item()
         # reset the status for next validation round
