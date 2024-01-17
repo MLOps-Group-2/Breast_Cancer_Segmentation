@@ -5,6 +5,7 @@ from glob import glob
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import ModelCheckpoint
 from omegaconf import DictConfig
 
 
@@ -147,24 +148,40 @@ def main(config: DictConfig):
     else:
         wandb_logger = False
 
+    # save epoch and val_loss in name
+    time_start = time.strftime("%Y-%m-%d_%H-%M")
+    models_path = config.train_hyp.model_repo_location.strip() + "/train-" + time_start
+    # saves a file like: my/path/sample-mnist-epoch=02-val_metric=0.32.ckpt
+    checkpoint_callback = ModelCheckpoint(
+        monitor="val_metric", dirpath=models_path + "/checkpoints/", filename="{epoch:02d}-{val_metric:.2f}"
+    )
+
     trainer = pl.Trainer(
         accelerator="auto",
         devices="auto",
         strategy="auto",
         limit_train_batches=limit_tb,
         max_epochs=max_epochs,
-        enable_checkpointing=False,
+        enable_checkpointing=True,
         logger=wandb_logger,
         log_every_n_steps=1,
+        callbacks=[checkpoint_callback],
     )
     trainer.fit(model, train_loader, val_loader)
 
-    filename = "/model-" + time.strftime("%Y%m%d-%H%M") + ".pt"
+    # after training, load and save best model to script:
+    best_model = UNETModel.load_from_checkpoint(
+        checkpoint_callback.best_model_path,
+        net=net,
+        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        learning_rate=lr,
+        optimizer_class=optimizer,
+    )
 
+    filename = f"/best_model-val_metric={checkpoint_callback.best_model_score}.pt"
     # Save the model in TorchScript format
-    script = model.to_torchscript()
-
-    torch.jit.save(script, config.train_hyp.model_repo_location.strip() + filename)
+    script = best_model.to_torchscript()
+    torch.jit.save(script, models_path + filename)
 
 
 if __name__ == "__main__":
