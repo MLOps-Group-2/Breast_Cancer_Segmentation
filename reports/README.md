@@ -498,7 +498,7 @@ The billing in GCP felt kind of intransparent as quotas were disabled based on w
 >
 > Answer:
 
---- question 26 fill here ---
+The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. !!!Something more has to be inserted here!!! Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
 
 ### Question 27
 
