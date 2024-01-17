@@ -484,7 +484,9 @@ The billing in GCP felt kind of intransparent as quotas were disabled based on w
 >
 > Answer:
 
---- question 25 fill here ---
+![sys_arch](./figures/sys_arch.png)
+
+The starting point of our project is the local setup, where we used a cookiecutter template to initialize our repo structure which is version controlled by Git. In our development environment we develop a pytorch application which also utilizes pytorch lightning and MONAI. VSCodes Debugger and Pytorch Profiler is used to resolve errors and improve performance. Configuration is handled by hydra while dependency management is done with conda. Local training can be done by pulling the data via DVC to the local data storage and monitoring it with W&B. Upon succesful code changes the code has to be pushed to a branch on GitHub via a pre-commit step. To merge it into the main source code approval from team members and the succesful completion of the defined Github Actions steps has to be done. On push to the main branch new docker images are build by Cloud Build and will be stored in the Artifact Registry. Those images may then be deployed by Vertex AI, Compute Engine or Cloud Run. Vertex AI and Compute Engine are doing the training whre the data is received from a GCP Bucket. The trained model will be stored in a dedicated model bucket. The prediction container is running on CLoud Run and will use the model from the model bucket and will offer an API Endpoint. The predictions will be saved in another bucket to monitor potential data drifting.
 
 ### Question 26
 
@@ -498,7 +500,7 @@ The billing in GCP felt kind of intransparent as quotas were disabled based on w
 >
 > Answer:
 
-The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. !!!Something more has to be inserted here!!! Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
+The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. Additionally our machoine learning problem seemed quite hard to achieve since our models did not train especially well. Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
 
 ### Question 27
 
@@ -515,7 +517,7 @@ The biggest struggles of the project were related to GCP where the quotas for Ve
 >
 > Answer:
 
-s230640 was in charge of
-s232001 was in charge of
-s232004 was in charge of
-s233561 was in charge of
+s230640 was in charge of setting up the cloud infrastructure and setting up the pipelines to succesfully train and predict in the cloud.
+s232001 was in charge of implementing the training script using pytorch and implementing the prediction in a FastAPI application.
+s232004 was in charge of implementing the unittests and implementing the training script into pytorch-lightning.
+s233561 was in charge of implementing the configuration via hydra, the logging via W&B, profiling via pytorch-lightning, executing the training on a local machine and documenting the project.
