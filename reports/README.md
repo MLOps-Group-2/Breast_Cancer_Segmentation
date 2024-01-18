@@ -331,7 +331,59 @@ In W&B we log the training loss for every step (see image 1) and the validation 
 >
 > Answer:
 
-We create several images for our project: one for training, one for deployment and one for data monitoring. To run the training on would have to first build the docker image by executing `docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest` and then run the image `docker run --name first_experiment --rm -v "$(pwd)"/data:/data train_hyp=<config_file> model_hyp=<config_file>`. The training dockerfile is the following: [train_model.dockerfile](https://github.com/MLOps-Group-2/Breast_Cancer_Segmentation/blob/main/dockerfiles/train_model.dockerfile).
+We create several images for our project: one for training, one for deployment and one for data monitoring.
+
+**Training docker**
+
+To run the training on would have to first build the docker from the relative [train_model.dockerfile](https://github.com/MLOps-Group-2/Breast_Cancer_Segmentation/blob/main/dockerfiles/train_model.dockerfile). 
+
+Build the training docker  
+```bash
+docker build -f ./dockerfiles/train_model.dockerfile . -t trainer:latest
+``` 
+
+Then running the container with the following command below. Since we used hydra for configuration we can append arguments 
+to the run for overwriting either any hyperparameter or the location of the data inside the container. The idea of overwriting
+data locations is that if we want to run the docker training run on vertex we can use the automatically mounted buckets as volumes
+with the path `/gcs/....`, but also if we want to mount a volume with the data needed we can overwrite the locations with arguments as well.
+
+Running the training docker outside vertex:
+- --shm-size=12G: allocates 12 GB shared memory to the container
+- -e: setting the ENV variable with wandb token to authenticate weight and biases report
+- -v: volumes we decide to overwrite f.x. the hydra config files with experiments, the data folder and the model repo folder.
+```bash
+docker run \ 
+	-it \
+	--shm-size=12G \ 
+	-d \  
+	-e WANDB_API_KEY=<YOUR_WANDB_API_KEY> \
+	-v path/to/training_config.yaml:/config/hydra/train_hyp/train_cpu.yaml \
+	-v path/to/hyperparameters.yaml:/config/hydra/model_hyp/hyp_cpu.yaml \
+	-v path/to/data/folder:/gcs/bcs-dataset/data/raw/BCSS  \
+	-v path/to/model:/gcs/model-repository-dtumlops/models \
+	trainer:latest \ 
+	"train_hyp=train_cpu" "model_hyp=hyp_cpu"
+```
+
+**Prediction docker**
+
+The prediction application serves FastAPI through uvicorn and only needs to know what model to pull from our model repository.
+
+Building:  
+```bash
+docker build -t predicter:latest -f dockerfiles/predict_model.dockerfile .
+```
+
+Running predicter:  
+```bash
+docker run \ 
+    --rm \ 
+    --name prediction_api \ 
+    -p 8000:80 \ 
+    -e STORAGE_MODE=gcp \ 
+    -e MODEL_PATH=location/of/model/in/bucket \ 
+    predicter:latest
+```
 
 ### Question 16
 
@@ -434,7 +486,21 @@ Artifact Registry:
 >
 > Answer:
 
-We managed to deploy our model by developing an application utilizing FastAPI. In a first step we served the model locally, where one can send an image to the application and receives the segmentation result in return. Afterwards we also deployed it on GCP where a user would have to call the service by calling `put command here`.
+We managed to deploy our model by developing an application utilizing FastAPI. In a first step we served the model locally, 
+where one can send an image to the application and receives the segmentation result in return. Afterwards we also deployed 
+it on GCP where a user could use the swagger docs to upload an image and get resutls.
+
+[Swager docs link](https://bcs-prediction-api-2jrai3q6wa-lz.a.run.app/docs)  
+[Prediction endpoint](https://bcs-prediction-api-2jrai3q6wa-lz.a.run.app/predict-img/)
+
+curl example
+```bash
+curl -X 'POST' \
+  'https://bcs-prediction-api-2jrai3q6wa-lz.a.run.app/predict-img/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'data=<LOCATION_OF_LOCAL_IMAGE>'
+```
 
 ### Question 23
 
@@ -451,6 +517,8 @@ We managed to deploy our model by developing an application utilizing FastAPI. I
 
 We managed to implement some monitoring of our deployed model. On one hand we can monitor our services peroformance via GCPs cloud monitoring functionalities. Are we using SLO and Alerts? Additionally we implemented some data monitoring which shows ...
 
+TODO: wrap up
+
 ### Question 24
 
 > **How many credits did you end up using during the project and what service was most expensive?**
@@ -464,7 +532,7 @@ We managed to implement some monitoring of our deployed model. On one hand we ca
 > Answer:
 
 The billing in GCP felt kind of intransparent as quotas were presumably disabled based on which billing accunt was connected to the project. In the first days of the project we were able to run a few training jobs on Vertex AI (4 in total) just to test that our pipeline works. When we were about to set up a large-scale training job a few days later, we no longer could do this due to unsurmountable quota restrictions. 
-In total we think we used XX dollars. For the lack of using the cloud for training, the cloud storage service has been the largest part off the bill. Unfortunately, to commence large scale training we did not have the required quotas resulting in a significantly lower usage of credits.
+In total at the end of thursday we had used 22.25 dollars. The cloud compute engine did have the most shares in spending but following close was the cloud storage since we do store alot of data, models and since images are technically stored in buckets via artifact/container registarty. Unfortunately, to commence large scale training we did not have the required quotas resulting in a significantly lower usage of credits.
 
 ## Overall discussion of project
 
