@@ -20,8 +20,6 @@ def test_prediction():
         }
 
         response = requests.post(url, files=files)
-        image_bytes = BytesIO(response.content)  # noqa
-        pil_image = Image.open(image_bytes)  # noqa
         assert response.status_code == 200, f"Response error {response.status_code}"
 
 
@@ -42,4 +40,3 @@ def test_response():
         image_bytes = BytesIO(response.content)  # noqa
         pil_image = Image.open(image_bytes)  # noqa
         assert pil_image.size == Image.open(train_images[0]).size
-        assert response.status_code == 200, f"Response error {response.status_code}"
