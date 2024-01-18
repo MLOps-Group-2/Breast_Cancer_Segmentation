@@ -18,10 +18,10 @@ config = Config()
 
 # Load model
 if config.storage_mode == "gcp":
-    download_blob(config.model_repository, config.model_path, './models/model.pt')
-    unet_model = torch.jit.load('./models/model.pt')
+    download_blob(config.model_repository, config.model_path, './model.pt')
+    unet_model = torch.jit.load('./model.pt', map_location=config.device)
 else:
-    unet_model = torch.jit.load(config.model_path)
+    unet_model = torch.jit.load(config.model_path, map_location=config.device)
 
 @app.get("/health")
 def read_health():
