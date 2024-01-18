@@ -53,9 +53,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements_dev.txt
 
-      - name: Codeformatting with ruff
+      - name: Codeformatting & Linting with ruff
         run: |
           pip install ruff
+          ruff check .
           ruff format .
 
   docker-build-training:

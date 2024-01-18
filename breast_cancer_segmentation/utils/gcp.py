@@ -1,5 +1,3 @@
-import os
-
 from google.cloud import storage
 
 
@@ -30,4 +28,3 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
             source_blob_name, bucket_name, destination_file_name
         )
     )
-

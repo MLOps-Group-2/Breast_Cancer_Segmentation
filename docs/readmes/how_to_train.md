@@ -33,3 +33,5 @@ gcloud ai custom-jobs create \
 --display-name=<test-run-name> \
 --config=config/vertex_jobs/config_training_cpu.yaml
 ```
+
+## In the Cloud using Compute Engine

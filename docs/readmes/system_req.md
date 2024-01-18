@@ -3,8 +3,7 @@
 ## Software Requirements
 
 - python >= 3.10
-- pip >=
-- docker
+- pip >= 23.3
+- docker >= 24.0
+- conda >= 23.7
 - gcp command line interface
-- conda >=
--

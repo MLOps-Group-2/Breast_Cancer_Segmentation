@@ -27,7 +27,7 @@ is popular for image segmentation in the medical domain.
 Our data used is the [Breast cancer semantic segmentation dataset](https://www.kaggle.com/datasets/whats2000/breast-cancer-semantic-segmentation-bcss/data)
 specifically the **224x224** image sizes.
 
-[APPLY IMAGE EXAMPLE]
+![example image](tests/trainer/test-data/train/TCGA-A1-A0SK-DX1_xmin45749_ymin25055_MPP-0_0_1120_size224.png "example image")
 
 The BCSS dataset, derived from TCGA, includes over 20,000 segmentation annotations of breast cancer tissue regions. Annotations are a collaborative effort of pathologists, residents, and medical students, using the Digital Slide Archive
 
