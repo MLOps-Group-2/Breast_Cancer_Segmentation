@@ -2,7 +2,6 @@ from fastapi import FastAPI, UploadFile, File, Response
 from PIL import Image
 from io import BytesIO
 
-
 import logging
 import torch
 import torchvision.transforms as transforms
@@ -19,8 +18,8 @@ config = Config()
 
 # Load model
 if config.storage_mode == "gcp":
-    download_blob(config.model_repository, config.model_path, '/models/model.pt')
-    unet_model = torch.jit.load('/models/model.pt')
+    download_blob(config.model_repository, config.model_path, './models/model.pt')
+    unet_model = torch.jit.load('./models/model.pt')
 else:
     unet_model = torch.jit.load(config.model_path)
 
