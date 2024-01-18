@@ -1,4 +1,4 @@
-.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run
+.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run serve_api
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -53,6 +53,11 @@ predict_docker_build:
 ## Run predicter container
 predict_docker_run:
 	docker run --rm --name $(PROJECT_NAME)_api -p 8000:80 $(DOCKER_PREDICT_REPO):latest
+
+# predictor api
+serve_api:
+	uvicorn breast_cancer_segmentation.predicter.main:app
+
 
 #################################################################################
 # PROJECT RULES                                                                 #

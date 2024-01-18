@@ -1,4 +1,7 @@
 import torch
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def predict(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> None:

@@ -4,10 +4,11 @@ Before starting to predict make sure to have succesfully completed all steps in 
 
 ## Locally using FastAPI
 
-Start the local application.
+Open a terminal in this repository at root folder and do
 ```bash
-uvicorn --reload --port 8000 ./breast_cancer_segmentation/predicter/main:app
+make serve_api
 ```
-Go to `http://localhost:8000/docs` and access the `predict-img` endpoint. Upload an image and receive your prediction.
 
-## In the Cloud using Cloud Run
+Then go to http://127.0.0.1:8000/docs , click on predict-img and then the button `try out` . Choose an image to upload (eg. with 224x224 pixels) and click on `execute`. The result shows an image that has the predicted classes overlayed on the original image.
+
+## Using Cloud Run API

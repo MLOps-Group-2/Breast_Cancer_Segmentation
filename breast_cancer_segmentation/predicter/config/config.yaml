@@ -1,0 +1,2 @@
+model_path: "./models/model-local.pt"
+model_repository: "model-repository-dtumlops"
