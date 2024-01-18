@@ -13,4 +13,3 @@ test_location: "/gcs/bcs-dataset/data/raw/BCSS/test"
 wandb_enabled: False
 model_repo_location: "/gcs/model-repository-dtumlops/models"
 optimizer: "AdamW"
-report_location: "/gcs/data-drifting-report"

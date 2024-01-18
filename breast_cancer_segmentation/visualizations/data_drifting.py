@@ -9,24 +9,54 @@ from monai.data import ArrayDataset
 from monai.transforms import (
     Compose,
     LoadImage,
-    RandRotate90,
-    RandSpatialCrop,
     ScaleIntensity,
 )
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
 
 
-def compute_features(dataset: ArrayDataset) -> pd.DataFrame:
-    """Get the images and extract meaningful features to check data drifting
+def get_class_distribution(labels: ArrayDataset) -> list:
+    """Get images and compute class distribution
     @args
     dataset: arraydataset of tensors each representing an image
 
     @returns
     dataframe: dataframe of features extracted from dataset
     """
+    count = [torch.bincount(torch.flatten(img.int()), minlength=3) for img in labels]
+    return count
+
+
+def get_grayscale_avg(dataset: ArrayDataset) -> list:
+    """Get the images and extract grayscale average
+    @args
+    dataset: arraydataset of tensors each representing an image
+
+    @returns
+    list: list of grayscale avg value per image
+    """
     dataset = torch.stack([torch.mean(image) for image in dataset])
-    dataframe = pd.DataFrame(dataset, columns=["Grayscale"])
+
+    return dataset
+
+
+def compute_features(grayscale, count: list = None) -> pd.DataFrame:
+    """Get features and compute dataframe
+    @args
+    dataset: arraydataset of tensors each representing an image
+
+    @returns
+    dataframe: dataframe of features extracted from dataset
+    """
+    features = []
+    columns = ["Grayscale"]
+    features.append(grayscale)
+    if count:
+        features.append([data[0].item() for data in count])
+        features.append([data[1].item() for data in count])
+        columns.append("0")
+        columns.append("1")
+    dataframe = pd.DataFrame(features[0], columns=columns)
     return dataframe
 
 
@@ -56,26 +86,31 @@ def main(config: DictConfig):
     @returns
     None
     """
-    report_location = config.train_hyp.report_location
+    report_location = config.evidently.report_location
     train_images = sorted(glob(os.path.join(config.train_hyp.train_img_location, "*.png")))
+    train_masks = sorted(glob(os.path.join(config.train_hyp.train_mask_location, "*.png")))
+    val_masks = sorted(glob(os.path.join(config.train_hyp.validation_mask_location, "*.png")))
     test_images = sorted(glob(os.path.join(config.train_hyp.test_location, "*.png")))
     # define transforms for image and segmentation
     imtrans = Compose(
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
 
     # Create datasets
     train_ds = ArrayDataset(train_images, imtrans)
+    train_masks_ds = ArrayDataset(train_masks, imtrans)  # noqa
     test_ds = ArrayDataset(test_images, imtrans)
-
-    pd_train_data = compute_features(train_ds[:4000])
-    pd_test_data = compute_features(test_ds)
-    compute_data_drift_report(pd_train_data, pd_test_data, report_location)
+    val_masks_ds = ArrayDataset(val_masks, imtrans)  # noqa
+    # counts = get_class_distribution(train_masks_ds) #noqa
+    train_grayscale = get_grayscale_avg(train_ds[:10000])
+    test_grayscale = get_grayscale_avg(test_ds)
+    train_dataframe = compute_features(train_grayscale)
+    test_dataframe = compute_features(test_grayscale)
+    print("beginning report")
+    compute_data_drift_report(train_dataframe, test_dataframe, report_location)
 
 
 if __name__ == "__main__":
