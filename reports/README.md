@@ -367,7 +367,7 @@ We do not think that our code is performing perfectly in terms of efficiency. Th
 
 In GCP we used the following services:
 - Vertex AI: Used for training the models using custom jobs.
-- Compute Engine: Used for training the models.
+- Compute Engine: Used for training the models (alternative to Vertex AI).
 - Artifact Registry: Used to store our training, inference and monitoring containers.
 - Cloud Storage: Used to store our data and our trained models.
 - Cloud Build: Used to build the docker containers for training, prediction & monitoring.
@@ -386,7 +386,7 @@ In GCP we used the following services:
 >
 > Answer:
 
-Initially we decided to not use Compute Engine and instead use Vertex AI. However, we encountered massive quota issues when trying to run our training on Vertex AI. Therfore we also implemented a variant to train on Compute Engine, where we launch a docker container on a VM to train our model. The instances we used are e.g. n2-standard-8 as no quota for GPU-VMs was available.
+Initially we decided to not use Compute Engine and instead use Vertex AI. However, we encountered quota issues when trying to run our training on Vertex AI, making it virtually impossible to run training jobs on Vertex AI. Therfore we also implemented a variant to train on Compute Engine, where we launch a docker container on a VM to train our model. The instances we used are e.g. n2-standard-8 as no quota for GPU-VMs was available either.
 
 ### Question 19
 
@@ -463,7 +463,8 @@ We managed to implement some monitoring of our deployed model. On one hand we ca
 >
 > Answer:
 
-The billing in GCP felt kind of intransparent as quotas were disabled based on which billing accunt was connected to the project. In total we think we used XX dollars. Most expensive has been the cloud storage service. Unfortunately, to commence large scale training we did not have the required quotas resulting in a significantly lower usage of credits.
+The billing in GCP felt kind of intransparent as quotas were presumably disabled based on which billing accunt was connected to the project. In the first days of the project we were able to run a few training jobs on Vertex AI (4 in total) just to test that our pipeline works. When we were about to set up a large-scale training job a few days later, we no longer could do this due to unsurmountable quota restrictions. 
+In total we think we used XX dollars. For the lack of using the cloud for training, the cloud storage service has been the largest part off the bill. Unfortunately, to commence large scale training we did not have the required quotas resulting in a significantly lower usage of credits.
 
 ## Overall discussion of project
 
@@ -500,7 +501,7 @@ The starting point of our project is the local setup, where we used a cookiecutt
 >
 > Answer:
 
-The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which cost a great amount of time. Additionally our machoine learning problem seemed quite hard to achieve since our models did not train well. Apart from those struggles all tools worked fine and we were able to develop our project efficiently and quickly.
+The biggest struggles of the project were related to GCP where the quotas for Vertex AI could not be increased. Therefore we had to do some of the training of our model on our local machines which significantly slowed model exploration and development. Additionally our machine learning problem seemed quite hard to succed in since our models did not train well. Apart from those struggles the tools employed worked fine and we were able to corabollatively develop our project in an efficient and streamlined manner.
 
 ### Question 27
 
