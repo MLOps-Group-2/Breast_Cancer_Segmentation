@@ -8,8 +8,8 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'prediction-api'
+      - 'bcs-prediction-api'
       - '--image'
       - 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api:latest'
       - '--region'
-      - 'europe-west3'
+      - 'europe-north1'
