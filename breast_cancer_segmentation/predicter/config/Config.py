@@ -1,8 +1,8 @@
 import os
 from hydra import compose, initialize
 
-class Config:
 
+class Config:
     def __init__(self):
         self.storage_mode = os.getenv('STORAGE_MODE', 'local')
         with initialize(version_base=None, config_path="."):
