@@ -105,7 +105,7 @@ end of the project.
 >
 > Answer:
 
-MLOps 2
+2
 
 ### Question 2
 > **Enter the study number for each member in the group**
