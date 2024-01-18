@@ -5,6 +5,7 @@ from glob import glob
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import ModelCheckpoint
 from omegaconf import DictConfig
 
 
@@ -16,8 +17,6 @@ from monai.data import ArrayDataset, DataLoader
 from monai.transforms import (
     Compose,
     LoadImage,
-    RandRotate90,
-    RandSpatialCrop,
     ScaleIntensity,
 )
 import hydra
@@ -54,16 +53,16 @@ def main(config: DictConfig):
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     train_segtrans = Compose(
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
@@ -121,12 +120,20 @@ def main(config: DictConfig):
             kernel_size=config.model_hyp.kernel_size,
             up_kernel_size=config.model_hyp.up_kernel_size,
         )
+    elif config.model_hyp.model == "FlexibleUNet":
+        net = monai.networks.nets.FlexibleUNet(
+            in_channels=config.model_hyp.in_channels,
+            out_channels=config.model_hyp.out_channels,
+            backbone=config.model_hyp.backbone,
+            pretrained=True,
+            dropout=config.model_hyp.dropout,
+        )
     else:
         log.error("No valid model name in configuration file")
 
     model = UNETModel(
         net=net,
-        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True, jaccard=False, include_background=True),
         learning_rate=lr,
         optimizer_class=optimizer,
         wandb_logging=config.train_hyp.wandb_enabled,
@@ -147,10 +154,13 @@ def main(config: DictConfig):
     else:
         wandb_logger = False
 
-    if config.train_hyp.profiling:
-        profiler = "simple"
-    else:
-        profiler = None
+    # save epoch and val_loss in name
+    time_start = time.strftime("%Y-%m-%d_%H-%M")
+    models_path = config.train_hyp.model_repo_location.strip() + "/train-" + time_start
+    # saves a file like: my/path/sample-mnist-epoch=02-val_metric=0.32.ckpt
+    checkpoint_callback = ModelCheckpoint(
+        monitor="val_metric", dirpath=models_path + "/checkpoints/", filename="{epoch:02d}-{val_metric:.2f}", mode="max"
+    )
 
     trainer = pl.Trainer(
         accelerator="auto",
@@ -158,20 +168,26 @@ def main(config: DictConfig):
         strategy="auto",
         limit_train_batches=limit_tb,
         max_epochs=max_epochs,
-        enable_checkpointing=False,
+        enable_checkpointing=True,
         logger=wandb_logger,
         log_every_n_steps=1,
-        profiler=profiler,
+        callbacks=[checkpoint_callback],
     )
-
     trainer.fit(model, train_loader, val_loader)
 
-    filename = "/model-" + time.strftime("%Y%m%d-%H%M") + ".pt"
+    # after training, load and save best model to script:
+    best_model = UNETModel.load_from_checkpoint(
+        checkpoint_callback.best_model_path,
+        net=net,
+        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        learning_rate=lr,
+        optimizer_class=optimizer,
+    )
 
+    filename = f"/best_model-val_metric={checkpoint_callback.best_model_score}.pt"
     # Save the model in TorchScript format
-    script = model.to_torchscript()
-
-    torch.jit.save(script, config.train_hyp.model_repo_location.strip() + filename)
+    script = best_model.to_torchscript()
+    torch.jit.save(script, models_path + filename)
 
 
 if __name__ == "__main__":

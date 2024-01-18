@@ -9,3 +9,4 @@ activation: "PRELU"
 kernel_size: 3
 up_kernel_size: 3
 model: "UNet"
+backbone: "efficientnet-b0"

@@ -1,10 +1,10 @@
 max_epochs: 1
-limit_train_batches: 0.1
+limit_train_batches: 0.01
 learning_rate: 0.01
 training_batch_size: 64
-training_num_workers: 0
+training_num_workers: 6
 validation_batch_size: 64
-validation_num_workers: 0
+validation_num_workers: 6
 train_img_location: "./data/raw/BCSS/train/"
 train_mask_location: "./data/raw/BCSS/train_mask/"
 validation_img_location: "./data/raw/BCSS/val/"
