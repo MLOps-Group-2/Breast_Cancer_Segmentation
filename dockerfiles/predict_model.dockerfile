@@ -28,7 +28,7 @@ COPY breast_cancer_segmentation/utils breast_cancer_segmentation/utils
 #RUN chmod +x predicter_entrypoint.sh
 
 WORKDIR /
-RUN mkdir -p models
+RUN mkdir -p /models
 RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install . --no-deps --no-cache-dir
 
