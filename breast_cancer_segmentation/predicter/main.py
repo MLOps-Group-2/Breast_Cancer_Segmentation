@@ -6,7 +6,8 @@ from io import BytesIO
 import logging
 import torch
 import torchvision.transforms as transforms
-#from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
+
+# from breast_cancer_segmentation.models.UNETModel import UNETModel  # noqa
 from monai.visualize.utils import blend_images
 from .config.Config import Config
 
@@ -19,6 +20,7 @@ config = Config()
 unet_model = torch.jit.load(config.model_path)
 
 print("model path ", config.model_path)
+
 
 @app.get("/health")
 def read_health():

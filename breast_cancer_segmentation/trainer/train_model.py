@@ -131,9 +131,18 @@ def main(config: DictConfig):
     else:
         log.error("No valid model name in configuration file")
 
+    if config.train_hyp.loss == "DiceCE":
+        criterion = monai.losses.DiceCELoss(to_onehot_y=True, softmax=False, jaccard=False, include_background=True)
+    elif config.train_hyp.loss == "DiceFocal":
+        criterion = monai.losses.DiceFocalLoss(to_onehot_y=True, softmax=False, weight=[1 / 0.71, 1 / 0.29])
+    elif config.train_hyp.loss == "Focal":
+        criterion = monai.losses.FocalLoss(to_onehot_y=True, use_softmax=False, weight=[1 / 0.71, 1 / 0.29])
+    else:
+        log.error("No valid loss function name in configuration file")
+
     model = UNETModel(
         net=net,
-        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True, jaccard=False, include_background=True),
+        criterion=criterion,
         learning_rate=lr,
         optimizer_class=optimizer,
         wandb_logging=config.train_hyp.wandb_enabled,
@@ -179,7 +188,7 @@ def main(config: DictConfig):
     best_model = UNETModel.load_from_checkpoint(
         checkpoint_callback.best_model_path,
         net=net,
-        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        criterion=criterion,
         learning_rate=lr,
         optimizer_class=optimizer,
     )
