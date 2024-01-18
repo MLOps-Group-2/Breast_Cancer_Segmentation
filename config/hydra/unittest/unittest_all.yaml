@@ -6,3 +6,13 @@ train_mask_location: "./data/raw/BCSS/train_mask/"
 validation_img_location: "./data/raw/BCSS/val/"
 validation_mask_location: "./data/raw/BCSS/val_mask/"
 test_location: "./data/raw/BCSS/test/"
+
+max_epochs: 1
+limit_train_batches: 1
+learning_rate: 0.01
+training_batch_size: 1
+training_num_workers: 0
+validation_batch_size: 1
+validation_num_workers: 0
+
+api_url: "https://bcs-prediction-api-2jrai3q6wa-lz.a.run.app/predict-img/"
