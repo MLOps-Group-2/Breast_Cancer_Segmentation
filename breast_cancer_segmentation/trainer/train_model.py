@@ -17,8 +17,6 @@ from monai.data import ArrayDataset, DataLoader
 from monai.transforms import (
     Compose,
     LoadImage,
-    RandRotate90,
-    RandSpatialCrop,
     ScaleIntensity,
 )
 import hydra
@@ -55,16 +53,16 @@ def main(config: DictConfig):
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     train_segtrans = Compose(
         [
             LoadImage(image_only=True, ensure_channel_first=True),
             ScaleIntensity(),
-            RandSpatialCrop((96, 96), random_size=False),
-            RandRotate90(prob=0.5, spatial_axes=(0, 1)),
+            # RandSpatialCrop((96, 96), random_size=False),
+            # RandRotate90(prob=0.5, spatial_axes=(0, 1)),
         ]
     )
     val_imtrans = Compose([LoadImage(image_only=True, ensure_channel_first=True), ScaleIntensity()])
@@ -122,12 +120,29 @@ def main(config: DictConfig):
             kernel_size=config.model_hyp.kernel_size,
             up_kernel_size=config.model_hyp.up_kernel_size,
         )
+    elif config.model_hyp.model == "FlexibleUNet":
+        net = monai.networks.nets.FlexibleUNet(
+            in_channels=config.model_hyp.in_channels,
+            out_channels=config.model_hyp.out_channels,
+            backbone=config.model_hyp.backbone,
+            pretrained=True,
+            dropout=config.model_hyp.dropout,
+        )
     else:
         log.error("No valid model name in configuration file")
 
+    if config.train_hyp.loss == "DiceCE":
+        criterion = monai.losses.DiceCELoss(to_onehot_y=True, softmax=False, jaccard=False, include_background=True)
+    elif config.train_hyp.loss == "DiceFocal":
+        criterion = monai.losses.DiceFocalLoss(to_onehot_y=True, softmax=False, weight=[1 / 0.71, 1 / 0.29])
+    elif config.train_hyp.loss == "Focal":
+        criterion = monai.losses.FocalLoss(to_onehot_y=True, use_softmax=False, weight=[1 / 0.71, 1 / 0.29])
+    else:
+        log.error("No valid loss function name in configuration file")
+
     model = UNETModel(
         net=net,
-        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        criterion=criterion,
         learning_rate=lr,
         optimizer_class=optimizer,
         wandb_logging=config.train_hyp.wandb_enabled,
@@ -153,7 +168,7 @@ def main(config: DictConfig):
     models_path = config.train_hyp.model_repo_location.strip() + "/train-" + time_start
     # saves a file like: my/path/sample-mnist-epoch=02-val_metric=0.32.ckpt
     checkpoint_callback = ModelCheckpoint(
-        monitor="val_metric", dirpath=models_path + "/checkpoints/", filename="{epoch:02d}-{val_metric:.2f}"
+        monitor="val_metric", dirpath=models_path + "/checkpoints/", filename="{epoch:02d}-{val_metric:.2f}", mode="max"
     )
 
     trainer = pl.Trainer(
@@ -173,7 +188,7 @@ def main(config: DictConfig):
     best_model = UNETModel.load_from_checkpoint(
         checkpoint_callback.best_model_path,
         net=net,
-        criterion=monai.losses.DiceCELoss(to_onehot_y=True, softmax=True),
+        criterion=criterion,
         learning_rate=lr,
         optimizer_class=optimizer,
     )

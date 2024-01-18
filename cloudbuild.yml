@@ -35,10 +35,10 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
-      - "run"
-      - "deploy"
-      - "prediction-api"
-      - "--image"
-      - "europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api:latest"
-      - "--region"
-      - "europe-west3"
+      - 'run'
+      - 'deploy'
+      - 'bcs-prediction-api'
+      - '--image'
+      - 'europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-prediction-api:latest'
+      - '--region'
+      - 'europe-north1'

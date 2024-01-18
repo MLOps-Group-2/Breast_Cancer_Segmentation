@@ -53,19 +53,23 @@ class UNETModel(pl.LightningModule):
         # create logging variables
         self.log("val_metric", self.dice_metric.aggregate().item())
         if batch_idx == 0 and self.wandb_logging:
-            img_idx = 1
-            values, indices = torch.topk(val_outputs[img_idx], k=1, dim=0)
-            img = blend_images(val_images[img_idx], indices, transparent_background=True, cmap="YlGn")
-            img_true = blend_images(val_images[img_idx], val_labels[img_idx], transparent_background=True, cmap="YlGn")
-            fig, (ax1, ax2) = plt.subplots(1, 2)
-            ax1.imshow(img.permute(2, 1, 0).cpu())
-            ax2.imshow(img_true.permute(2, 1, 0).cpu())
-            ax1.axis("off")
-            ax2.axis("off")
-            ax1.title.set_text("prediction")
-            ax2.title.set_text("ground truth")
+            img_idx = [0, 1, 2, 3, 4]
+            fig, axs = plt.subplots(5, 2)
+            plt.rcParams["figure.dpi"] = 300
+            for elem in img_idx:
+                values, indices = torch.topk(val_outputs[elem], k=1, dim=0)
+                img = blend_images(val_images[elem], indices, transparent_background=True, cmap="YlGn")
+                img_true = blend_images(val_images[elem], val_labels[elem], transparent_background=True, cmap="YlGn")
+                axs[elem, 0].imshow(img.permute(2, 1, 0).cpu())
+                axs[elem, 1].imshow(img_true.permute(2, 1, 0).cpu())
+                axs[elem, 0].axis("off")
+                axs[elem, 1].axis("off")
+                if elem == 0:
+                    axs[elem, 0].title.set_text("prediction")
+                    axs[elem, 1].title.set_text("ground truth")
             plt.tight_layout()
             self.logger.experiment.log({"prediction_image": wandb.Image(fig)})
+            plt.close(fig)
         # aggregate the final mean dice result
         metric = self.dice_metric.aggregate().item()
         # reset the status for next validation round
