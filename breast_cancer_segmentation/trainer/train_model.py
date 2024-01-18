@@ -163,6 +163,11 @@ def main(config: DictConfig):
     else:
         wandb_logger = False
 
+    if config.train_hyp.profiling:
+        profiler = "simple"
+    else:
+        profiler = None
+
     # save epoch and val_loss in name
     time_start = time.strftime("%Y-%m-%d_%H-%M")
     models_path = config.train_hyp.model_repo_location.strip() + "/train-" + time_start
@@ -180,8 +185,10 @@ def main(config: DictConfig):
         enable_checkpointing=True,
         logger=wandb_logger,
         log_every_n_steps=1,
+        profiler=profiler,
         callbacks=[checkpoint_callback],
     )
+
     trainer.fit(model, train_loader, val_loader)
 
     # after training, load and save best model to script:

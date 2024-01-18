@@ -1,9 +1,9 @@
 workerPoolSpecs:
-    machineSpec:
-        machineType: n1-standard-8
-        acceleratorType: NVIDIA_TESLA_T4
-        acceleratorCount: 1
-    replicaCount: 1
-    containerSpec:
-        imageUri: europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer:latest
-        args: ["train_hyp=train_hyp_gcp_gpu"]
+  machineSpec:
+    machineType: n1-standard-8
+    acceleratorType: NVIDIA_TESLA_T4
+    acceleratorCount: 1
+  replicaCount: 1
+  containerSpec:
+    imageUri: europe-docker.pkg.dev/igneous-thunder-410709/eu.gcr.io/bcs-trainer:latest
+    args: ["train_hyp=train_hyp_gcp_gpu"]

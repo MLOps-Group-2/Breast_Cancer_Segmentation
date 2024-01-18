@@ -4,7 +4,7 @@ learning_rate: 0.01
 
 training_batch_size: 128
 training_num_workers: 7
-validation_batch_size:  128
+validation_batch_size: 128
 validation_num_workers: 7
 
 train_img_location: "/gcs/bcs-dataset/data/raw/BCSS/train"
@@ -15,4 +15,5 @@ test_location: "/gcs/bcs-dataset/data/raw/BCSS/test"
 wandb_enabled: True
 model_repo_location: "/gcs/model-repository-dtumlops/models"
 optimizer: "AdamW"
+profiling: False
 loss: "DiceCE"

@@ -1,4 +1,4 @@
-.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run serve_api datadrift datadrift_remote
+.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run serve_api run_vertex_cpu run_remote_training_default datadrift datadrift_remote
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -65,6 +65,15 @@ datadrift:
 # run data drift remote
 datadrift_remote:
 	gcloud beta run jobs execute bcs-data-drift
+
+# Run vertex CPU
+run_vertex_cpu:
+	gcloud ai custom-jobs create --region=europe-north1 --display-name="BCSS-run" --config=./config/vertex_jobs/config_training_cpu.yaml
+
+# Run default training remote
+run_remote_training_default:
+	gcloud compute ssh --zone "europe-west1-b" "training-instance" --project "igneous-thunder-410709" --command 'sh run_training.sh'
+
 
 #################################################################################
 # PROJECT RULES                                                                 #

@@ -14,3 +14,5 @@ training_batch_size: 1
 training_num_workers: 0
 validation_batch_size: 1
 validation_num_workers: 0
+
+api_url: "https://bcs-prediction-api-2jrai3q6wa-lz.a.run.app/predict-img/"
