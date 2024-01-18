@@ -13,4 +13,4 @@ test_location: "/gcs/bcs-dataset/data/raw/BCSS/test"
 wandb_enabled: True
 model_repo_location: "/gcs/model-repository-dtumlops/models"
 optimizer: "AdamW"
-profiling: False
+loss: "DiceCE"
