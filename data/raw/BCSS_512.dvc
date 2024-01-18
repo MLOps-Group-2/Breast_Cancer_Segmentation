@@ -1,0 +1,6 @@
+outs:
+- md5: dc446e963aa2e9f46a3d79c3def03e8b.dir
+  size: 4374751105
+  nfiles: 17536
+  hash: md5
+  path: BCSS_512

@@ -1,15 +1,18 @@
-max_epochs: 25
-limit_train_batches: 0.5
+max_epochs: 400
+limit_train_batches: 1.0
 learning_rate: 0.01
-training_batch_size: 64
-training_num_workers: 8
-validation_batch_size: 64
-validation_num_workers: 4
+
+training_batch_size: 128
+training_num_workers: 7
+validation_batch_size:  128
+validation_num_workers: 7
+
 train_img_location: "/gcs/bcs-dataset/data/raw/BCSS/train"
 train_mask_location: "/gcs/bcs-dataset/data/raw/BCSS/train_mask"
 validation_img_location: "/gcs/bcs-dataset/data/raw/BCSS/val"
 validation_mask_location: "/gcs/bcs-dataset/data/raw/BCSS/val_mask"
 test_location: "/gcs/bcs-dataset/data/raw/BCSS/test"
-wandb_enabled: False
+wandb_enabled: True
 model_repo_location: "/gcs/model-repository-dtumlops/models"
 optimizer: "AdamW"
+loss: "DiceCE"
