@@ -9,9 +9,10 @@ COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY breast_cancer_segmentation/ breast_cancer_segmentation/
 COPY config/hydra/ config/hydra/
-COPY reports/ reports/
 
 WORKDIR /
+RUN mkdir -p reports
+RUN mkdir -p reports/drift
 RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install -e . --no-deps --no-cache-dir
 

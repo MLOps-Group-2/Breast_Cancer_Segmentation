@@ -1,4 +1,4 @@
-.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run serve_api
+.PHONY: create_environment requirements dev_requirements clean data build_documentation serve_documentation train training_docker_build predict_docker_build predict_docker_run serve_api datadrift datadrift_remote
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -58,6 +58,13 @@ predict_docker_run:
 serve_api:
 	uvicorn breast_cancer_segmentation.predicter.main:app
 
+# Run data drift report local
+datadrift:
+	python breast_cancer_segmentation/visualizations/data_drifting.py
+
+# run data drift remote
+datadrift_remote:
+	gcloud beta run jobs execute bcs-data-drift
 
 #################################################################################
 # PROJECT RULES                                                                 #
