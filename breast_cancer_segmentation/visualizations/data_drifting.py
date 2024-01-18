@@ -88,8 +88,8 @@ def main(config: DictConfig):
     """
     report_location = config.evidently.report_location
     train_images = sorted(glob(os.path.join(config.train_hyp.train_img_location, "*.png")))
-    train_masks = sorted(glob(os.path.join(config.train_hyp.train_mask_location, "*.png")))
-    val_masks = sorted(glob(os.path.join(config.train_hyp.validation_mask_location, "*.png")))
+    # train_masks = sorted(glob(os.path.join(config.train_hyp.train_mask_location, "*.png")))
+    # val_masks = sorted(glob(os.path.join(config.train_hyp.validation_mask_location, "*.png")))
     test_images = sorted(glob(os.path.join(config.train_hyp.test_location, "*.png")))
     # define transforms for image and segmentation
     imtrans = Compose(
@@ -101,10 +101,10 @@ def main(config: DictConfig):
 
     # Create datasets
     train_ds = ArrayDataset(train_images, imtrans)
-    train_masks_ds = ArrayDataset(train_masks, imtrans)  # noqa
+    # train_masks_ds = ArrayDataset(train_masks, imtrans)
     test_ds = ArrayDataset(test_images, imtrans)
-    val_masks_ds = ArrayDataset(val_masks, imtrans)  # noqa
-    # counts = get_class_distribution(train_masks_ds) #noqa
+    # val_masks_ds = ArrayDataset(val_masks, imtrans)
+    # counts = get_class_distribution(train_masks_ds)
     train_grayscale = get_grayscale_avg(train_ds[:10000])
     test_grayscale = get_grayscale_avg(test_ds)
     train_dataframe = compute_features(train_grayscale)
