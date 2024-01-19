@@ -35,3 +35,9 @@ gcloud ai custom-jobs create \
 ```
 
 ## In the Cloud using Compute Engine
+
+One can start the training on the Compute Engine like this:
+
+```bash
+make run_remote_training_default
+```
