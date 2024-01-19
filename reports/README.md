@@ -319,8 +319,8 @@ We made use of config files to make our experiments reproducible. Whenever an ex
 In W&B we log the training loss for every step (see image 2) and the validation metric for every epoch (see image 2) to monitor the training progress. The validation metric is based on the DICE-Metric provided by MONAI and indicates the progress of the training. The higher the value, the better the model performs on the validation data. The training loss depends on the loss funcion used in the training. This might either be the DiceCE-Loss or the Focal-Loss offered by MONAI. The values shall increase with training progress. Additionally we also visualize the prediction on five specific images of the validation dataset to be able to intuitively say whether a trained model predicts something useful (see image 1). On top of that GPU and CPU parameters like the the power usage or memory usage are monitored (see image 3) to assess the condition of the training hardware and assess whether training with more data would be possible.
 
 ![W&B image](./figures/wand_image_metric.png)
-![W&B metrics](./figures/wandb_training_metrics.png)
-![W&B GPU metrics](./figures/wandb_gpu_metrics.png)
+![W&B metrics](./figures/wandb_training_metrics_.png)
+![W&B GPU metrics](./figures/wandb_gpu_metrics_.png)
 
 By logging those metrics in Weights & Biases it is possible to compare different experiments and derive information about which model and training configuration will probably lead to good results and may be used later in deployment.
 
